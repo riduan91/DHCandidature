@@ -6,10 +6,9 @@
 import sys                  # for getting command line arguments
 import multiprocessing      # for parallel tasks
 import time                 # for time measurement
-import make_pdf             # for building pdf
+#import make_pdf             # for building pdf
 import os                   # for os commands
 import urllib2              # for dealing with url, proxy
-import make_zip             # for file compression
 #import upload_google_drive  # for uploading to google drive
 import mailSender           # for mail sending
 import csv                  # for csv form
@@ -63,23 +62,6 @@ def prepare(path):
     # back to the path's folder
 	os.chdir('..')
 
-# Check for internet connection
-# Arguments(1):
-#   - has_proxy: indicate if connected through a firewall
-def isInternetOn(has_proxy):
-    if has_proxy == True:
-        proxy_handler = urllib2.ProxyHandler(PROXIES)
-        opener = urllib2.build_opener(proxy_handler)
-        urllib2.install_opener(opener)
-
-    try:
-        # try to connect to a popular website, here Google,
-        # real ip address is recommended for faster checking
-        urllib2.urlopen('http://google.com',timeout=1)
-        return True
-    except urllib2.URLError as err: pass
-
-    return False
 
 # Prepare tasks for building and classifying pdfs
 # Arguments(0):
@@ -87,7 +69,7 @@ def isInternetOn(has_proxy):
 # Prepare tasks for sending pdfs to candidates and upload them to Google Drive
 # Arguments(0)
 def send():
-    print 'Bước 2: Gửi pdf đến các bạn sinh viên và gửi lên Google Drive của ĐH...'
+    print 'Gửi pdf đến các bạn sinh viên...'
  
     os.chdir(TARGET)
 
@@ -171,13 +153,3 @@ if __name__ == '__main__':
 
     # Chỉ thực hiện stepTwo() một lần duy nhất sau khi nhận được tất cả hồ sơ
     send()
-    '''
-    print 'Đang kiểm tra kết nối Internet...'
-    if isInternetOn(HAS_PROXY)==True:
-        print 'Bạn có kết nối Internet, hồ sơ sau khi tạo sẽ được gửi đến sinh viên và đưa lên Google Drive'
-
-        # send pdf and upload to google 
-        # stepTwo()
-    else:
-        print 'Bạn không có Internet, hồ sơ không được gửi đi'
-    '''
