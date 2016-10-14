@@ -41,28 +41,6 @@ SCHOOL_DICTIONARY = {
     'Trường khác (ghi rõ trong thư xin học bổng)' : 'KHAC',
 }
 
-# Check if target folders exist and create them if necessary
-# Arguments(1):
-#   - path: the path of target
-def prepare(path):
-	if (not(os.path.exists(path))):
-		print 'Đang tạo thư mục %s' % path
-		os.mkdir(path)
-
-	os.chdir(path)
-	if (not(os.path.exists('tmp'))):
-		print 'Đang tạo thư mục tmp'
-		os.mkdir('tmp')	
-
-	for code in SCHOOL_CODE:
-		if (not(os.path.exists(code))):
-			print 'Đang tạo thư mục %s' % code
-			os.mkdir(code)
-
-    # back to the path's folder
-	os.chdir('..')
-
-
 # Prepare tasks for building and classifying pdfs
 # Arguments(0):
 
@@ -110,11 +88,10 @@ def transformCSVToList(filename):
 
 # Specifies the .csv name and where to store pdfs
 TARGET = '../Docs/'
-UPLOAD_FOLDER = 'DH 2014'
 
 # Constants
 START_INDEX = 1
-END_INDEX = 91
+END_INDEX = 1
 CANDIDATE_LIST = []
 
 # Specifies proxies that this app may bypass
@@ -134,10 +111,6 @@ if (POOL_SIZE==0):
 if __name__ == '__main__':
     multiprocessing.freeze_support()
 
-    # init
-    prepare(TARGET)
-
-    # Transform our csv table into a list of lists of strings. Each list of strings is called a "candidate".
     CANDIDATE_LIST = transformCSVToList(sys.argv[1])
     nb_candidates = len(CANDIDATE_LIST)
     print 'Có %s sinh viên trong danh sách' % nb_candidates
