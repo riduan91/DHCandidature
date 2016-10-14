@@ -32,7 +32,7 @@ REDUCED_TARGET = '../Docsreduce/'
 
 # Constants
 START_INDEX = 1
-END_INDEX = 91
+END_INDEX = 1
 CANDIDATE_LIST = []
 
 # Specifies proxies that this app may bypass
