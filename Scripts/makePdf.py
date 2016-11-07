@@ -594,7 +594,7 @@ def step1(Story, candidate, heading_csv):
     local_needed_fields = ['HoVaTen', 'GioiTinh', 'NgaySinh', 'MaSoSV','NamThu']
     table_data = [ [(get(heading_csv, key, True) + ':').decode('utf-8'), Paragraph(get(candidate, key).decode('utf-8'), DOC_STYLES['Italic Body Style']), candidate_photo] for key in local_needed_fields]
     table_style = TRANSPARENT_TABLE_WITH_MERGE
-    table = Table(table_data, colWidths=[136, 200, 160])
+    table = Table(table_data, colWidths=[136, 240, 120])
     table.setStyle(table_style)
     Story.append(table)
     
