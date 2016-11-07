@@ -142,7 +142,7 @@ FIELD_NAMES = ['HoVaTen', 'GioiTinh', 'NgaySinh', 'MaSoSV','NamThu', 'KhoaNganh'
                'DongTienNhaKhong', 'DongTienNhaBaoNhieu','HocThemKhong', 'HocThemBaoNhieu', 'DongTienKhac', 'MongMuonNhanGiTuDH',
                'KhoKhanLamHoSo', 'LienLacCachNao1', 'LienLacCachNao2', 'LienLacCachNao3', 'LienLacCachNao4', 'DeDatNhanNhu',
                'HinhThucThu', 'KhungVietThu', 'KhungScanThu', 'BangDiemScan', 'ChungNhanKhoKhanScan', 'GiayToKhacScan',
-               'GiayToKhacList', 'XacNhan']
+               'GiayToKhacList', 'AnhCaNhan']
 
 # Get the index (position of column) of each fields
 INDEX_OF_KEY = {}
@@ -157,6 +157,15 @@ TRANSPARENT_TABLE = TableStyle([
                                 ('FONT',(1,0),(1,-1),'UVNI'),
                                 ('FONT',(-1,0),(-1,-1),'UVNI'),
                                 ('FONTSIZE',(0,0),(-1,-1),12),
+                                ])
+TRANSPARENT_TABLE_WITH_MERGE = TableStyle([
+                                ('VALIGN',(0,0),(-1,-1),'MIDDLE'),
+                                ('ALIGN',(0,0),(-1,-1),'LEFT'),
+                                ('FONT',(0,0),(-1,-1),'UVN'),
+                                ('FONT',(1,0),(1,-1),'UVNI'),
+                                ('FONT',(-1,0),(-1,-1),'UVNI'),
+                                ('FONTSIZE',(0,0),(-1,-1),12),
+								('SPAN',(-1,0),(-1,-1)),
                                 ])
 TRANSPARENT_REGULAR_TABLE = TableStyle([
                                 ('VALIGN',(0,0),(-1,-1),'MIDDLE'),
@@ -215,7 +224,7 @@ def get(candidate, key, is_heading=False):
     """
     
     if key=='NgaySinh' and is_heading:
-        return "Ngày Sinh"
+        return "Ngày sinh"
     
     # 'DiaChiSinh' and 'DiaChiTru' are combinations of 'SoNhaDuong', 'QuanHuyen' and 'TinhThanh'
     if key=='DiaChiSinh':
@@ -367,10 +376,30 @@ def transform_to_list(filename):
         f.close()
     return data
 
-def createLogo():
+def createLogo(candidate):
     '''
         This function creates logo and logo text for some pdf pages.
     '''
+
+    # For DH Singapore
+    if SCHOOL_CODE[get(candidate, 'Truong')] in ['CNHN','KTLHCM']:
+    	# read image and put to flowable object
+    	logo_img = PIL_Image.open(logodir + 'logo_dong_hanh_sing.png')
+    	imsize = logo_img.size
+    	imw = float(imsize[0])*.09
+    	imh = float(imsize[1])*.09
+    	logo_img = Flowable_Image(logodir + 'logo_dong_hanh_sing.png', imw, imh)
+    	logo_img.hAlign = 'LEFT'
+    
+    	# create DH info
+    	logo_text = []
+    	logo_text.append(Paragraph('Quỹ học bổng Đồng Hành Singapore', DOC_STYLES['Signature Style']))
+    	logo_text.append(Paragraph('Website: www.donghanh.net', DOC_STYLES['Signature Style']))
+    	logo_text.append(Paragraph('Email: contact@donghanh.net', DOC_STYLES['Signature Style']))
+    
+    	return logo_img, logo_text
+	
+	# Now for DH France
     # read image and put to flowable object
     logo_img = PIL_Image.open(logodir + 'logo_dong_hanh.png')
     imsize = logo_img.size
@@ -421,7 +450,7 @@ def buildPdf(target, index, candidate, heading_csv):
     TMP_PATH = target + 'tmp/'
     INTERVIEW_PATH = target + '../Docs/INTERVIEW/'
     filename = buildPdfName(candidate, index)
-
+    filename2 = buildPdfName(candidate, 0)
     # initialise document
     Doc = SimpleDocTemplate(TMP_PATH + filename + '_1.pdf', papersize=A4,
                             rightMargin=RIGHT_MARGIN, leftMargin=LEFT_MARGIN,
@@ -524,6 +553,12 @@ def buildPdf(target, index, candidate, heading_csv):
                 os.remove(TMP_PATH + filename + '_' + str(index) + '.pdf')
             except OSError:
                 pass
+
+    try:
+        os.remove('../Docs/' + filename2 + '_photo')
+    except OSError:
+        pass 
+
     return filename
 
 ############### ----------END OF CORE FUNCTION---------- ###############
@@ -534,9 +569,21 @@ def step1(Story, candidate, heading_csv):
     '''
         This function creates "Sơ yếu lí lịch"
     '''
+    filename = buildPdfName(candidate, 0)
+	
     # add logo
-    logo_img, logo_text = createLogo()
+    logo_img, logo_text = createLogo(candidate)
     Story.append(Table([[logo_img, logo_text]]))
+	
+    # add AnhCaNhan
+    candidate_photo = ""
+    if get(candidate, 'AnhCaNhan') != "yes" and get(candidate, 'AnhCaNhan') != "":
+        download(get(candidate, 'AnhCaNhan'), filename + '_photo')
+	#c.drawImage(filename, inch, height - 2 * inch)
+	imw = 75 
+	imh = 100 
+	candidate_photo = Flowable_Image(filename + '_photo', imw, imh)
+	candidate_photo.hAlign = 'CENTER'
 
     # Title
     Story.append(Paragraph(u'SƠ YẾU LÍ LỊCH', DOC_STYLES['Title Style']))
@@ -544,9 +591,14 @@ def step1(Story, candidate, heading_csv):
     # Personal Infos
     Story.append(Paragraph(u'I. Thông tin cá nhân', DOC_STYLES['Heading I Style']))
     
-    local_needed_fields = ['HoVaTen', 'GioiTinh', 'NgaySinh', 'MaSoSV','NamThu', 'KhoaNganh',
-                    'Lop', 'Truong', 'DiaChiSinh', 'DiaChiTru', 'DienThoai', 'Email']
+    local_needed_fields = ['HoVaTen', 'GioiTinh', 'NgaySinh', 'MaSoSV','NamThu']
+    table_data = [ [(get(heading_csv, key, True) + ':').decode('utf-8'), Paragraph(get(candidate, key).decode('utf-8'), DOC_STYLES['Italic Body Style']), candidate_photo] for key in local_needed_fields]
+    table_style = TRANSPARENT_TABLE_WITH_MERGE
+    table = Table(table_data, colWidths=[136, 200, 160])
+    table.setStyle(table_style)
+    Story.append(table)
     
+    local_needed_fields = ['KhoaNganh', 'Lop', 'Truong', 'DiaChiSinh', 'DiaChiTru', 'DienThoai', 'Email']
     table_data = [ [(get(heading_csv, key, True) + ':').decode('utf-8'), Paragraph(get(candidate, key).decode('utf-8'), DOC_STYLES['Italic Body Style'])] for key in local_needed_fields]
     table_style = TRANSPARENT_TABLE
     table = Table(table_data, colWidths=[136, 360])
@@ -652,7 +704,7 @@ def step2(Story, candidate, heading_csv):
             This function creates "Phiếu điều tra"
     '''
     # add logo
-    logo_img, logo_text = createLogo()
+    logo_img, logo_text = createLogo(candidate)
     Story.append(Table([[logo_img, logo_text]]))
 
     # Title
@@ -731,7 +783,7 @@ def step3(Story, candidate):
 
     if get(candidate,'HinhThucThu')=="Đánh máy trực tiếp tại đây":
         # add logo
-        logo_img, logo_text = createLogo()
+        logo_img, logo_text = createLogo(candidate)
         Story.append(Table([[logo_img, logo_text]]))
         # Title
         Story.append(Paragraph(u'THƯ XIN HỌC BỔNG', DOC_STYLES['Title Style']))
@@ -772,7 +824,7 @@ def step5(Story, candidate, filename):
         This function creates "Ý kiến đánh giá" page
     '''
     # add logo
-    logo_img, logo_text = createLogo()
+    logo_img, logo_text = createLogo(candidate)
     Story.append(Table([[logo_img, logo_text]]))
     
     # heading
