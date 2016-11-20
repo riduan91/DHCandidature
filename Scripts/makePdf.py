@@ -63,7 +63,7 @@ RIGHT_MARGIN = 50
 TOP_MARGIN = 50
 BOTTOM_MARGIN = 50
 
-CURRENT_SEMESTER = 30
+CURRENT_SEMESTER = 31
 
 # Line spacing
 LINE_SPACING = 6
@@ -122,7 +122,9 @@ SCHOOL_CODE = {
 }
 
 # Icon for Yes/No questions: cross for "Yes", blank for "No"
-YES_NO_ICON = {'yes': "[ X ]", 'Yes': u"[ X ]", 'No': "[    ]", 'no': "[    ]", u'Có': "[ X ]", u'Không': "[    ]", u'có': "[ X ]", u'không': "[    ]", 'Không': "[    ]", 'Có': "[ X ]", 'Chưa từng': "[    ]", u'Chưa từng': "[     ]", '': "[     ]"}
+# YES_NO_ICON = {'yes': "[ X ]", 'Yes': u"[ X ]", 'No': "[    ]", 'no': "[    ]", u'Có': "[ X ]", u'Không': "[    ]", u'có': "[ X ]", u'không': "[    ]", 'Không': "[    ]", 'Có': "[ X ]", 'Chưa từng': "[    ]", u'Chưa từng': "[     ]", '': "[     ]"}
+
+YES_NO_ICON = {'yes': u"\u2327", 'Yes': u"\u2327", 'No': u"\u29e0", 'no': u"\u29e0", u'Có': u"\u2327", u'Không': u"\u29e0", u'có': u"\u2327", u'không': u"\u29e0", 'Không': u"\u29e0", 'Có': u"\u2327", 'Chưa từng': u"\u29e0", u'Chưa từng': u"\u29e0", '': u"\u29e0"}
 
 # Keys for all fields of the input csv
 # The order of these fields must match exactly those in the input csb
@@ -591,14 +593,14 @@ def step1(Story, candidate, heading_csv):
     # Personal Infos
     Story.append(Paragraph(u'I. Thông tin cá nhân', DOC_STYLES['Heading I Style']))
     
-    local_needed_fields = ['HoVaTen', 'GioiTinh', 'NgaySinh', 'MaSoSV','NamThu']
+    local_needed_fields = ['HoVaTen', 'GioiTinh', 'NgaySinh', 'MaSoSV','NamThu', 'KhoaNganh']
     table_data = [ [(get(heading_csv, key, True) + ':').decode('utf-8'), Paragraph(get(candidate, key).decode('utf-8'), DOC_STYLES['Italic Body Style']), candidate_photo] for key in local_needed_fields]
     table_style = TRANSPARENT_TABLE_WITH_MERGE
     table = Table(table_data, colWidths=[136, 240, 120])
     table.setStyle(table_style)
     Story.append(table)
     
-    local_needed_fields = ['KhoaNganh', 'Lop', 'Truong', 'DiaChiSinh', 'DiaChiTru', 'DienThoai', 'Email']
+    local_needed_fields = ['Lop', 'Truong', 'DiaChiSinh', 'DiaChiTru', 'DienThoai', 'Email']
     table_data = [ [(get(heading_csv, key, True) + ':').decode('utf-8'), Paragraph(get(candidate, key).decode('utf-8'), DOC_STYLES['Italic Body Style'])] for key in local_needed_fields]
     table_style = TRANSPARENT_TABLE
     table = Table(table_data, colWidths=[136, 360])
@@ -751,7 +753,7 @@ def step2(Story, candidate, heading_csv):
                   [u'Học thêm ngoại ngữ, tin học: ', YES_NO_ICON[get(candidate, 'HocThemKhong')], u'Thời gian: ', Paragraph(get(candidate, 'HocThemBaoNhieu'), DOC_STYLES['Body Right Style'] )],
                   [u'Khác (ghi rõ): ', '', '',  Paragraph(get(candidate, 'HocThemBaoNhieu'), DOC_STYLES['Body Right Style'] )]]
     table_style = VERTICAL_TRANSPARENT_NUMERIC_TABLE
-    table = Table(table_data, colWidths=[170, 50, 100, 150 ])
+    table = Table(table_data, colWidths=[180, 30, 70, 150 ])
     table.setStyle(table_style)
     Story.append(table)
 
