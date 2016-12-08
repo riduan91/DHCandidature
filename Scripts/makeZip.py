@@ -42,7 +42,8 @@ def zip(src, dst):
         zf = zipfile.ZipFile(zfname, "w")
         abs_src = os.path.abspath(src)
         for dirname, subdirs, files in os.walk(src):
-            files = [fi for fi in files if fi.endswith(".pdf")]     # filter pdfs
+            #files = [fi for fi in files if fi.endswith(".pdf")]     # filter pdfs
+            files = [fi for fi in files]
             nb_file = len(files)
             count=1
             for filename in files:
