@@ -165,7 +165,7 @@ def transformCSVToList(filename):
     return data
 
 def simplify(record):
-    new_record = [""]*13
+    new_record = [""]*12
     fullname = titlestyle(record[1]).split(" ")
     new_record[0] = ""
     new_record[1] = " ".join(fullname[:-1])

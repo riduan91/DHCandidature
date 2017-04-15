@@ -400,6 +400,23 @@ def createLogo(candidate):
     	logo_text.append(Paragraph('Email: contact@donghanh.net', DOC_STYLES['Signature Style']))
     
     	return logo_img, logo_text
+
+    elif SCHOOL_CODE[get(candidate, 'Truong')] in ['CTHO']:
+         # read image and put to flowable object
+        logo_img = PIL_Image.open(logodir + 'logo_dong_hanh.png')
+        imsize = logo_img.size
+        imw = float(imsize[0])*.15
+        imh = float(imsize[1])*.15
+        logo_img = Flowable_Image(logodir + 'logo_dong_hanh.png', imw, imh)
+        logo_img.hAlign = 'LEFT'
+
+        # create DH info
+        logo_text = []
+        logo_text.append(Paragraph('Quỹ học bổng Đồng Hành Đài Loan', DOC_STYLES['Signature Style']))
+        logo_text.append(Paragraph('Website: www.donghanh.net', DOC_STYLES['Signature Style']))
+        logo_text.append(Paragraph('Email: contact@donghanh.net', DOC_STYLES['Signature Style']))
+
+        return logo_img, logo_text
 	
 	# Now for DH France
     # read image and put to flowable object
