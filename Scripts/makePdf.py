@@ -63,7 +63,7 @@ RIGHT_MARGIN = 50
 TOP_MARGIN = 50
 BOTTOM_MARGIN = 50
 
-CURRENT_SEMESTER = 31
+CURRENT_SEMESTER = 33
 
 # Line spacing
 LINE_SPACING = 6
@@ -116,6 +116,7 @@ SCHOOL_CODE = {
     'Trường Đại học Khoa học tự nhiên, ĐHQG TP Hồ Chí Minh' : 'TNHCM',
     'Trường Đại học Kinh tế Luật, ĐHQG TP Hồ Chí Minh' : 'KTLHCM',
     'Trường Đại học Giao thông vận tải cơ sở II (tại TP Hồ Chí Minh)' : 'GTVT2',
+    'Trường Đại học Sư phạm Kỹ thuật TP Hồ Chí Minh' : 'SPKTHCM',
     'Trường Đại học Đà Lạt' : 'DALAT',
     'Trường Đại học Cần Thơ' : 'CTHO',
     'Trường khác (ghi rõ trong thư xin học bổng)' : 'KHAC',
@@ -134,7 +135,7 @@ FIELD_NAMES = ['HoVaTen', 'GioiTinh', 'NgaySinh', 'MaSoSV','NamThu', 'KhoaNganh'
                'QuanHuyenTru', 'TinhThanhTru', 'DienThoai', 'Email', 'HoTenCha', 'TuoiCha',
                'NgheNghiepCha', 'HoTenMe', 'TuoiMe', 'NgheNghiepMe', 'NguoiThan1', 'NguoiThan2',
                'NguoiThan3', 'NguoiThan4', 'NguoiThan5', 'NguoiThan6', 'NguoiThan7', 'NguoiThan8',
-               'NguoiThan9', 'DiemKi1', 'DiemKi2', 'DiemKi3', 'DiemTotNghiep', 'DiemDaiHoc',
+               'NguoiThan9', 'DiemDaiHoc', 'DiemKi1', 'DiemKi2', 'DiemKi3', 'DiemTotNghiep', 
                'ThanhTichKhac1', 'ThanhTichKhac2', 'ThanhTichKhac3', 'ThanhTichKhac4', 'ThanhTichKhac5', 'THPT',
                'NhanHBDHChua', 'KiN-5', 'KiN-4', 'KiN-3', 'KiN-2', 'KiN-1',
                'CoHoTroKhac', 'HoTro1', 'HoTro2', 'HoTro3', 'HoTro4', 'HoTro5',

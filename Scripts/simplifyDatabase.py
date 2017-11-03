@@ -3,7 +3,7 @@
 
 import os, sys, csv
 
-CURRENT_SEMESTER = 32
+CURRENT_SEMESTER = 33
 UPPERCASE = {
     'a': 'A', 'à': 'À', 'á': 'Á', 'ả': 'Ả', 'ã': 'Ã', 'ạ': 'Ạ',
     'ă': 'Ă', 'ằ': 'Ằ', 'ắ': 'Ắ', 'ẳ': 'Ẳ', 'ẵ': 'Ẵ', 'ặ': 'Ặ',
@@ -51,6 +51,7 @@ SCHOOL_CODE = {
     'Trường Đại học Khoa học tự nhiên, ĐHQG TP Hồ Chí Minh' : 'TNHCM',
     'Trường Đại học Kinh tế Luật, ĐHQG TP Hồ Chí Minh' : 'KTLHCM',
     'Trường Đại học Giao thông vận tải cơ sở II (tại TP Hồ Chí Minh)' : 'GTVT2',
+    'Trường Đại học Sư phạm Kỹ thuật TP Hồ Chí Minh' : 'SPKTHCM',
     'Trường Đại học Đà Lạt' : 'DALAT',
     'Trường Đại học Cần Thơ' : 'CTHO',
     'Trường khác (ghi rõ trong thư xin học bổng)' : 'KHAC',
@@ -71,6 +72,7 @@ SCHOOL_NB = {
     'Trường Đại học Khoa học tự nhiên, ĐHQG TP Hồ Chí Minh' : '10',
     'Trường Đại học Kinh tế Luật, ĐHQG TP Hồ Chí Minh' : '15',
     'Trường Đại học Giao thông vận tải cơ sở II (tại TP Hồ Chí Minh)' : '14',
+    'Trường Đại học Sư phạm Kỹ thuật TP Hồ Chí Minh' : '18',
     'Trường Đại học Đà Lạt' : '12',
     'Trường Đại học Cần Thơ' : '17',
     'Trường khác (ghi rõ trong thư xin học bổng)' : '21',

@@ -18,7 +18,8 @@ SCHOOL_CODE = [
     'BKHN', 'TNHN', 'XD', 'GTVT1', 'CNHN',
     'VINH', 'BKDN', 'KTDN','SPDN', 
     'NNDN', 'BKHCM', 'TNHCM', 'KTLHCM',
-    'GTVT2', 'DALAT', 'CTHO', 'KHAC'
+    'GTVT2', 'DALAT', 'CTHO', 'SPKTHCM', 
+    'KHAC'
 ]
 
 SCHOOL_DICTIONARY = {
