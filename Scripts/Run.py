@@ -16,9 +16,9 @@ import csv                  # for csv form
 # Abbreviations for universities' names
 SCHOOL_CODE = [
     'BKHN', 'TNHN', 'XD', 'GTVT1', 'CNHN',
-    'VINH', 'BKDN', 'KTDN','SPDN', 
+    'VINH', 'BKDN', 'KTDN','SPDN',
     'NNDN', 'BKHCM', 'TNHCM', 'KTLHCM',
-    'GTVT2', 'DALAT', 'CTHO', 'KHAC'
+    'GTVT2', 'DALAT', 'CTHO', 'SPKTHCM', 'KHAC'
 ]
 
 ZIP_SOURCE_FOLDER = "../Docs/"

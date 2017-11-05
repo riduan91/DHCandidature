@@ -19,23 +19,10 @@ reportlab.rl_config.warnOnMissingFontGlyphs = 0
 
 logodir = '../Resources/Images/'
 # Determine where to find fonts w.r.t OS
-import platform
-OS = platform.system()
-if (OS== "Windows"):
-    UVN_SRC = 'C:\Windows\Fonts\Cambria.ttc'
-    UVNB_SRC = 'C:\Windows\Fonts\CambriaB.ttf'
-    UVNI_SRC = 'C:\Windows\Fonts\CambriaI.ttf'
-    UVNZ_SRC = 'C:\Windows\Fonts\CambriaZ.ttf'
-elif (OS=="Darwin"):
-    UVdirhN_SRC = '/Library/Fonts/Microsoft/Cambria.ttf'
-    UVNB_SRC = '/Library/Fonts/Microsoft/Cambria Bold.ttf'
-    UVNI_SRC = '/Library/Fonts/Microsoft/Cambria Italic.ttf'
-    UVNZ_SRC = '/Library/Fonts/Microsoft/Cambria Bold Italic.ttf'
-else:
-    UVN_SRC = '../Resources/Fonts/cambria.ttc'
-    UVNB_SRC = '../Resources/Fonts/cambriab.ttf'
-    UVNI_SRC = '../Resources/Fonts/cambriai.ttf'
-    UVNZ_SRC = '../Resources/Fonts/cambriaz.ttf'
+UVN_SRC = '../Resources/Fonts/cambria.ttc'
+UVNB_SRC = '../Resources/Fonts/cambriab.ttf'
+UVNI_SRC = '../Resources/Fonts/cambriai.ttf'
+UVNZ_SRC = '../Resources/Fonts/cambriaz.ttf'
 
 # Import the font 'CAMBRIA' to display Vietnamese
 from reportlab.pdfbase.ttfonts import TTFont
@@ -118,6 +105,7 @@ SCHOOL_CODE = {
     'Trường Đại học Giao thông vận tải cơ sở II (tại TP Hồ Chí Minh)' : 'GTVT2',
     'Trường Đại học Đà Lạt' : 'DALAT',
     'Trường Đại học Cần Thơ' : 'CTHO',
+    'Trường Đại học Sư phạm Kỹ thuật TP Hồ Chí Minh' : 'SPKTHCM',
     'Trường khác (ghi rõ trong thư xin học bổng)' : 'KHAC',
 }
 
@@ -134,7 +122,7 @@ FIELD_NAMES = ['HoVaTen', 'GioiTinh', 'NgaySinh', 'MaSoSV','NamThu', 'KhoaNganh'
                'QuanHuyenTru', 'TinhThanhTru', 'DienThoai', 'Email', 'HoTenCha', 'TuoiCha',
                'NgheNghiepCha', 'HoTenMe', 'TuoiMe', 'NgheNghiepMe', 'NguoiThan1', 'NguoiThan2',
                'NguoiThan3', 'NguoiThan4', 'NguoiThan5', 'NguoiThan6', 'NguoiThan7', 'NguoiThan8',
-               'NguoiThan9', 'DiemKi1', 'DiemKi2', 'DiemKi3', 'DiemTotNghiep', 'DiemDaiHoc',
+               'NguoiThan9', 'DiemDaiHoc', 'DiemKi1', 'DiemKi2', 'DiemKi3', 'DiemTotNghiep',
                'ThanhTichKhac1', 'ThanhTichKhac2', 'ThanhTichKhac3', 'ThanhTichKhac4', 'ThanhTichKhac5', 'THPT',
                'NhanHBDHChua', 'KiN-5', 'KiN-4', 'KiN-3', 'KiN-2', 'KiN-1',
                'CoHoTroKhac', 'HoTro1', 'HoTro2', 'HoTro3', 'HoTro4', 'HoTro5',
@@ -148,8 +136,8 @@ FIELD_NAMES = ['HoVaTen', 'GioiTinh', 'NgaySinh', 'MaSoSV','NamThu', 'KhoaNganh'
 
 # Get the index (position of column) of each fields
 INDEX_OF_KEY = {}
-for index in range(1, len(FIELD_NAMES)+1):
-    INDEX_OF_KEY[FIELD_NAMES[index-1]] = index
+for index in range(0, len(FIELD_NAMES)):
+    INDEX_OF_KEY[FIELD_NAMES[index]] = index
 
 # Some table styles
 TRANSPARENT_TABLE = TableStyle([
