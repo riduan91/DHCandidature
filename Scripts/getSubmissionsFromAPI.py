@@ -11,6 +11,9 @@ import os                   # for os commands
 import urllib2              # for dealing with url, proxy
 import argparse
 import makeZip
+import logging
+
+logger = logging.getLogger(__name__)
 
 API_KEY = '521350-1405134815-au8cmd567qxfnrb49'
 FORM_ID = {
@@ -40,7 +43,7 @@ REDUCED_TARGET = '../Docsreduce/'
 
 # Determine pool size
 NB_CPUS = multiprocessing.cpu_count()
-print "nb_cpus", NB_CPUS
+logger.info("nb_cpus", NB_CPUS)
 POOL_SIZE = (NB_CPUS-1)*2
 if (POOL_SIZE==0):
         POOL_SIZE = 2
@@ -50,35 +53,35 @@ if (POOL_SIZE==0):
 #   - path: the path of target
 def prepare(path):
 	if (not(os.path.exists(path))):
-	    print 'Đang tạo thư mục %s' % path
+	    logger.info('Đang tạo thư mục %s' % path)
 	    os.mkdir(path)
 
 	os.chdir(path)
 	if (not(os.path.exists('tmp'))):
-	    print 'Đang tạo thư mục tmp'
+	    logger.info('Đang tạo thư mục tmp')
 	    os.mkdir('tmp')
 
 	for code in SCHOOL_CODE:
 	    if (not(os.path.exists(code))):
-		print 'Đang tạo thư mục %s' % code
+		logger.info('Đang tạo thư mục %s' % code)
 		os.mkdir(code)
 
         if (not(os.path.exists('INTERVIEW'))):
-            print 'Đang tạo thư mục INTERVIEW'
+            logger.info('Đang tạo thư mục INTERVIEW')
             os.mkdir('INTERVIEW')
 
         for code in SCHOOL_CODE:
             if (not(os.path.exists('INTERVIEW/' + code))):
-                print 'Đang tạo thư mục INTERVIEW/%s' % code
+                logger.info('Đang tạo thư mục INTERVIEW/%s' % code)
                 os.mkdir('INTERVIEW/' + code)
 
 def simply_prepare(path):
         if (not(os.path.exists(path))):
-            print 'Đang tạo thư mục %s' % path
+            logger.info('Đang tạo thư mục %s' % path)
             os.mkdir(path)
 
         if (not(os.path.exists(path + 'ZIPPER'))):
-            print 'Đang tạo thư mục ZIPPER'
+            logger.info('Đang tạo thư mục ZIPPER')
             os.mkdir(path + 'ZIPPER/')
 
 def log_error(error_message):
@@ -87,11 +90,11 @@ def log_error(error_message):
     f.close()
 
 def run(candidates):
-    print 'Tạo pdf tương ứng với từng bạn sinh viên và phân loại theo tên trường...'
+    logger.info('Tạo pdf tương ứng với từng bạn sinh viên và phân loại theo tên trường...')
 
     # create thread POOL w.r.t the number of available cpus
     pool = multiprocessing.Pool(POOL_SIZE)
-    print 'Máy tính của bạn có %s cpu, Chương trình sẽ tạo %s threads' % (NB_CPUS, POOL_SIZE)
+    logger.info('Máy tính của bạn có %s cpu, Chương trình sẽ tạo %s threads' % (NB_CPUS, POOL_SIZE))
 
     # keep track of start time
     start_time = time.time()
@@ -105,22 +108,20 @@ def run(candidates):
     for r in apply_objects:
         try:
             pdfname = r.get()
-            print 'File %s đã được tạo' % pdfname
+            logger.info('File %s đã được tạo' % pdfname)
         except Exception as e:
-            print r
-            print e
-            #log_error(str(r))
-            #log_error(str(e))
+            logger.error(e)
+            log_error(str(e))
 
     pool.close()
     pool.join()
 
     try:
         os.rmdir(TARGET+'tmp')
-    except OSError:
-        pass
+    except OSError as e:
+        logger.error(e)
 
-    print 'Việc tạo pdf được tiến hành trong %0.2f giây' % (time.time()-start_time)
+    logger.info('Việc tạo pdf được tiến hành trong %0.2f giây' % (time.time()-start_time))
 
 
 def getSubmissionCount(form_id):
@@ -130,7 +131,7 @@ def getSubmissionCount(form_id):
     }
     response = requests.post(url, data=data)
     res_obj = json.loads(response.content)
-    print res_obj['submissionsCount']
+    logger.info(res_obj['submissionsCount'])
     return int(res_obj['submissionsCount'])
 
 def getSubmissionsFromAPI(form_id):
@@ -152,7 +153,7 @@ def getSubmissionsFromAPI(form_id):
             for field in candidate['fields']:
                 candidate_string_list += [field['fieldvalue'].encode('utf-8')]
             candidates += [candidate_string_list]
-    # print(candidates[0])
+    # logger.info(candidates[0])
     return candidates
 
 def zip():
@@ -162,9 +163,19 @@ def zip():
     for school_code in SCHOOL_CODE:
         makeZip.zip(ZIP_SOURCE_FOLDER + school_code, ZIP_DESTINATION_FOLDER + school_code)
         makeZip.zip(ZIP_SOURCE_FOLDER + "INTERVIEW/" + school_code, ZIP_DESTINATION_FOLDER + "_INTERVIEW_" + school_code )
-    print 'Việc nén file được tiến hành trong %0.2f giây' % (time.time()-start_time)
+    logger.info('Việc nén file được tiến hành trong %0.2f giây' % (time.time()-start_time))
 
 if __name__ == '__main__':
+    from logging import StreamHandler, Formatter
+    logging.basicConfig(filename='error.log',level=logging.ERROR)
+    FORMAT = '[%(asctime)-15s] %(levelname)-6s %(message)s'
+    DATE_FORMAT = '%d/%b/%Y %H:%M:%S'
+    formatter = Formatter(fmt=FORMAT, datefmt=DATE_FORMAT)
+    handler = StreamHandler()
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    logger.setLevel(logging.DEBUG)
+
     multiprocessing.freeze_support()
     simply_prepare(REDUCED_TARGET)
     prepare(TARGET)
@@ -175,18 +186,18 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.form == "all":
         for form in FORM_ID:
-            print("Generate pdf for {}".format(form))
+            logger.info("Generate pdf for {}".format(form))
             candidates = getSubmissionsFromAPI(FORM_ID[form])
             run(candidates)
-            print("Finished pdf generator for {}".format(form))
+            logger.info("Finished pdf generator for {}".format(form))
     if args.form in FORM_ID:
         form_id = FORM_ID[args.form]
         candidates = getSubmissionsFromAPI(form_id)
         run(candidates)
     else:
-        print("Please choose a form to get submission. Available choice: fr, sg, tw")
+        logger.info("Please choose a form to get submission. Available choice: fr, sg, tw")
         sys.exit(1)
 
     zip()
 
-    print("done")
+    logger.info("done")

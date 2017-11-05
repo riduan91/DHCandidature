@@ -15,6 +15,8 @@ from reportlab.lib import colors
 from reportlab.lib.units import inch
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER, TA_RIGHT
 from reportlab.platypus.flowables import Image as Flowable_Image
+import logging
+logger = logging.getLogger(__name__)
 reportlab.rl_config.warnOnMissingFontGlyphs = 0
 
 logodir = '../Resources/Images/'
@@ -34,7 +36,7 @@ pdfmetrics.registerFontFamily('Cambria', normal='UVN', bold='UVNB', italic='UVNI
 
 import urllib                                   # Import urllib to download files
 import requests                                 # Another lib to download files
-from PIL import Image as PIL_Image              # Import PIL to read image files  
+from PIL import Image as PIL_Image              # Import PIL to read image files
 from PyPDF2 import PdfFileMerger, PdfFileReader # Import pypdf2 to merge pdf file
 import os                                       # for deleting temps
 from PyPDF2 import PdfFileWriter
@@ -207,15 +209,15 @@ def get(candidate, key, is_heading=False):
     """
         Usage: get(candidate, key, is_heading=False)
         This function returns the column "key" of the candidate "candidate"
-        Params(3): 
+        Params(3):
             candidate:      The csv row w.r.t a candidate
             key:            The field to get
             is_heading:     True if this is the heading row of the csv
     """
-    
+
     if key=='NgaySinh' and is_heading:
         return "Ngày sinh"
-    
+
     # 'DiaChiSinh' and 'DiaChiTru' are combinations of 'SoNhaDuong', 'QuanHuyen' and 'TinhThanh'
     if key=='DiaChiSinh':
         if not is_heading:
@@ -238,7 +240,7 @@ def moneyProcessing(candidate, key):
             candidate:      The csv row w.r.t a candidate
             key:            The field to get
     """
-    
+
     transformed_value = get(candidate, key)
     if len(transformed_value)>=7:
         l = len(transformed_value)
@@ -256,7 +258,7 @@ def createStyles():
         This function initializes all necessary document styles for the final output pdf
         Params(0): No param
     """
-    
+
     Styles = getSampleStyleSheet()
 
     # logo text + signature
@@ -264,39 +266,39 @@ def createStyles():
         fontName='UVNB', fontSize=10, alignment=TA_RIGHT, rightIndent=10))
 
     # Document title
-    Styles.add(ParagraphStyle(name='Title Style', 
+    Styles.add(ParagraphStyle(name='Title Style',
         fontName='UVNB', fontSize=16, alignment=TA_CENTER, spaceAfter=3*LINE_SPACING, spaceBefore=3*LINE_SPACING))
 
     # Document body text
-    Styles.add(ParagraphStyle(name='Body Style', 
+    Styles.add(ParagraphStyle(name='Body Style',
         fontName='UVNI', fontSize=12, leading=16, alignment=TA_JUSTIFY, spaceAfter=LINE_SPACING))
-		
+
 	# Document body text
-    Styles.add(ParagraphStyle(name='Body Right Style', 
+    Styles.add(ParagraphStyle(name='Body Right Style',
         fontName='UVNI', fontSize=12, leading=16, alignment=TA_RIGHT, spaceAfter=LINE_SPACING))
-		
+
 	# Document body text
-    Styles.add(ParagraphStyle(name='Body Center Style', 
+    Styles.add(ParagraphStyle(name='Body Center Style',
         fontName='UVNI', fontSize=12, leading=16, alignment=TA_CENTER, spaceAfter=LINE_SPACING))
-        
+
     # Document body text with italic
     Styles.add(ParagraphStyle(name='Italic Body Style',
         fontName='UVNI', fontSize=12, alignment=TA_JUSTIFY, spaceAfter=LINE_SPACING))
 
     # Heading I
-    Styles.add(ParagraphStyle(name='Heading I Style', 
+    Styles.add(ParagraphStyle(name='Heading I Style',
         fontName='UVNB', fontSize=12, alignment=TA_JUSTIFY, spaceBefore=2*LINE_SPACING, spaceAfter=2*LINE_SPACING))
 
     # Table Heading
-    Styles.add(ParagraphStyle(name='Table Heading Style', 
+    Styles.add(ParagraphStyle(name='Table Heading Style',
         fontName='UVNB', fontSize=12, leading=16, alignment=TA_CENTER))
 
     # Table Cell
-    Styles.add(ParagraphStyle(name='Table Cell Style', 
+    Styles.add(ParagraphStyle(name='Table Cell Style',
         fontName='UVNI', fontSize=12, leading=16))
 
     # LoM Body
-    Styles.add(ParagraphStyle(name='LoM Body Style', 
+    Styles.add(ParagraphStyle(name='LoM Body Style',
         fontName='UVN', fontSize=12, alignment=TA_JUSTIFY, spaceAfter=LINE_SPACING, firstLineIndent=28, leading=20))
 
     return Styles
@@ -308,10 +310,10 @@ def newLine(Story, nbLines):
     """
         Usage: newLine(Story, nbLines)
         This function makes several empty lines in the current story of the output pdf
-        Params(2): 
+        Params(2):
             Story: The current reportlab story
             nbLines: The number of empty lines to make
-            
+
     """
     for index in xrange(nbLines):
         Story.append(Paragraph('', DOC_STYLES['Body Style']))
@@ -330,15 +332,15 @@ def rename(my_string):
         if current in REMOVE_ACCENT:
             my_new_string += REMOVE_ACCENT[current]
             current = ''
-    
+
         # All ASCII letters should be conserved
         if ord(my_string[index]) <= 123 and ord(my_string[index]) >= 65:
             my_new_string += my_string[index]
             current = ''
-			
+
         else:
             current += my_string[index]
-		
+
     if current in REMOVE_ACCENT:
 	my_new_string += REMOVE_ACCENT[current]
     return my_new_string.title().replace(' ', '_')
@@ -380,13 +382,13 @@ def createLogo(candidate):
     	imh = float(imsize[1])*.09
     	logo_img = Flowable_Image(logodir + 'logo_dong_hanh_sing.png', imw, imh)
     	logo_img.hAlign = 'LEFT'
-    
+
     	# create DH info
     	logo_text = []
     	logo_text.append(Paragraph('Quỹ học bổng Đồng Hành Singapore', DOC_STYLES['Signature Style']))
     	logo_text.append(Paragraph('Website: www.donghanh.net', DOC_STYLES['Signature Style']))
     	logo_text.append(Paragraph('Email: contact@donghanh.net', DOC_STYLES['Signature Style']))
-    
+
     	return logo_img, logo_text
 
     elif SCHOOL_CODE[get(candidate, 'Truong')] in ['CTHO']:
@@ -405,7 +407,7 @@ def createLogo(candidate):
         logo_text.append(Paragraph('Email: contact@donghanh.net', DOC_STYLES['Signature Style']))
 
         return logo_img, logo_text
-	
+
 	# Now for DH France
     # read image and put to flowable object
     logo_img = PIL_Image.open(logodir + 'logo_dong_hanh.png')
@@ -414,14 +416,14 @@ def createLogo(candidate):
     imh = float(imsize[1])*.15
     logo_img = Flowable_Image(logodir + 'logo_dong_hanh.png', imw, imh)
     logo_img.hAlign = 'LEFT'
-    
+
     # create DH info
     logo_text = []
     logo_text.append(Paragraph('Quỹ học bổng Đồng Hành', DOC_STYLES['Signature Style']))
     logo_text.append(Paragraph('16 rue Petit-Musc', DOC_STYLES['Signature Style']))
     logo_text.append(Paragraph('75004, Paris, Pháp', DOC_STYLES['Signature Style']))
     logo_text.append(Paragraph('Email: contact@donghanh.net', DOC_STYLES['Signature Style']))
-    
+
     return logo_img, logo_text
 
 def make_tabs(N): return '&nbsp;' * N
@@ -430,7 +432,7 @@ def download(urllink, filename):
     '''
         Usage: download(urllink, filename)
         This function downloads content from urllink and save it under 'filename'
-        Params(2): 
+        Params(2):
             urllink:        the URL link
             filename:       The filename to be saved.
     '''
@@ -467,20 +469,20 @@ def buildPdf(target, index, candidate, heading_csv):
     Story = []
 
     # Sơ yếu lí lịch
-    Story = step1(Story, candidate, heading_csv)
-    
+    Story = step1(Story, candidate, heading_csv, TMP_PATH)
+
     # Phiếu điều tra
     Story = step2(Story, candidate, heading_csv)
-    
+
     # Thư xin học bổng
     Story = step3(Story, candidate)
 
     # create temporary file
     Doc.build(Story)
-    
+
     # Download attachments
     has_file = step4(candidate, TMP_PATH + filename)
-    
+
     # Ý kiến đánh giá
     Doc = SimpleDocTemplate(TMP_PATH + filename + '_6.pdf', papersize=A4,
                             rightMargin=RIGHT_MARGIN, leftMargin=LEFT_MARGIN,
@@ -489,16 +491,16 @@ def buildPdf(target, index, candidate, heading_csv):
     DocForInterview = SimpleDocTemplate(INTERVIEW_PATH + SCHOOL_CODE[get(candidate, 'Truong')] + '/' +  filename + '_6.pdf', papersize=A4,
                             rightMargin=RIGHT_MARGIN, leftMargin=LEFT_MARGIN,
                             topMargin=TOP_MARGIN, bottomMargin=BOTTOM_MARGIN,
-                            title=filename, author='DH\'s pdf generator v1.0', )    
+                            title=filename, author='DH\'s pdf generator v1.0', )
     Story = []
     Story = step5(Story, candidate, heading_csv)
     Doc.build(Story)
     Story = step5(Story, candidate, heading_csv)
     DocForInterview.build(Story)
-    
-    
+
+
     success = 1
-    
+
     # Create a merger (an object to merge documents) then join created documents into the merger.
     merger = PdfFileMerger()
     input = PdfFileReader(file(TMP_PATH + filename + '_1.pdf', 'rb'))
@@ -514,10 +516,10 @@ def buildPdf(target, index, candidate, heading_csv):
             if not input.isEncrypted:
                 merger.append(input)
             else:
-                print "Không thể nối thư xin học bổng ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công."
+                logger.info( "Không thể nối thư xin học bổng ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
                 success = 0
-        except IOError:
-            pass
+        except IOError as e:
+            logger.error(e)
 
     # Bảng điểm
     if has_file['BangDiemScan']==1:
@@ -525,7 +527,7 @@ def buildPdf(target, index, candidate, heading_csv):
         if not input.isEncrypted:
             merger.append(input)
         else:
-            print "Không thể nối bảng điểm ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công."
+            logger.info("Không thể nối bảng điểm ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
             success = 0
 
     # Chứng nhận hoàn cảnh khó khăn/Sổ hộ nghèo
@@ -534,7 +536,7 @@ def buildPdf(target, index, candidate, heading_csv):
         if not input.isEncrypted:
             merger.append(input)
         else:
-            print "Không thể nối chứng nhận khó khăn ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công."
+            logger.info("Không thể nối chứng nhận khó khăn ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
             success = 0
 
     # Giấy tờ khác
@@ -543,7 +545,7 @@ def buildPdf(target, index, candidate, heading_csv):
         if not input.isEncrypted:
             merger.append(input)
         else:
-            print "Không thể các giấy tờ khác ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công."
+            logger.info("Không thể các giấy tờ khác ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
             success = 0
 
     input = PdfFileReader(file(TMP_PATH + filename + '_6.pdf', 'rb'))
@@ -562,9 +564,9 @@ def buildPdf(target, index, candidate, heading_csv):
                 pass
 
     try:
-        os.remove('../Docs/' + filename2 + '_photo')
-    except OSError:
-        pass 
+        os.remove('../Docs/tmp/' + filename2 + '_photo.png')
+    except OSError as e:
+        pass
 
     return filename
 
@@ -572,24 +574,24 @@ def buildPdf(target, index, candidate, heading_csv):
 
 ############### ----------PARTIAL FUNCTIONS---------- ###############
 
-def step1(Story, candidate, heading_csv):
+def step1(Story, candidate, heading_csv, TMP_PATH):
     '''
         This function creates "Sơ yếu lí lịch"
     '''
     filename = buildPdfName(candidate, 0)
-	
+
     # add logo
     logo_img, logo_text = createLogo(candidate)
     Story.append(Table([[logo_img, logo_text]]))
-	
+
     # add AnhCaNhan
     candidate_photo = ""
     if get(candidate, 'AnhCaNhan') != "yes" and get(candidate, 'AnhCaNhan') != "":
-        download(get(candidate, 'AnhCaNhan'), filename + '_photo')
+        download(get(candidate, 'AnhCaNhan'), TMP_PATH + filename + '_photo.png')
 	#c.drawImage(filename, inch, height - 2 * inch)
-	imw = 75 
-	imh = 100 
-	candidate_photo = Flowable_Image(filename + '_photo', imw, imh)
+	imw = 75
+	imh = 100
+	candidate_photo = Flowable_Image(TMP_PATH + filename + '_photo.png', imw, imh)
 	candidate_photo.hAlign = 'CENTER'
 
     # Title
@@ -597,21 +599,21 @@ def step1(Story, candidate, heading_csv):
 
     # Personal Infos
     Story.append(Paragraph(u'I. Thông tin cá nhân', DOC_STYLES['Heading I Style']))
-    
+
     local_needed_fields = ['HoVaTen', 'GioiTinh', 'NgaySinh', 'MaSoSV','NamThu', 'KhoaNganh']
     table_data = [ [(get(heading_csv, key, True) + ':').decode('utf-8'), Paragraph(get(candidate, key).decode('utf-8'), DOC_STYLES['Italic Body Style']), candidate_photo] for key in local_needed_fields]
     table_style = TRANSPARENT_TABLE_WITH_MERGE
     table = Table(table_data, colWidths=[136, 240, 120])
     table.setStyle(table_style)
     Story.append(table)
-    
+
     local_needed_fields = ['Lop', 'Truong', 'DiaChiSinh', 'DiaChiTru', 'DienThoai', 'Email']
     table_data = [ [(get(heading_csv, key, True) + ':').decode('utf-8'), Paragraph(get(candidate, key).decode('utf-8'), DOC_STYLES['Italic Body Style'])] for key in local_needed_fields]
     table_style = TRANSPARENT_TABLE
     table = Table(table_data, colWidths=[136, 360])
     table.setStyle(table_style)
     Story.append(table)
-    
+
     # Infos on family
     Story.append(Paragraph(u'II. Thông tin về các thành viên trong gia đình', DOC_STYLES['Heading I Style']))
     table_data = [[u'Họ và tên cha:', get(candidate, 'HoTenCha')], [u'Tuổi:', get(candidate, 'TuoiCha'), u'Nghề nghiệp:', get(candidate, 'NgheNghiepCha')],
@@ -620,7 +622,7 @@ def step1(Story, candidate, heading_csv):
     table = Table(table_data, colWidths=[100, 100, 100, 200])
     table.setStyle(table_style)
     Story.append(table)
-    
+
     Story.append(Spacer(width=0, height=2*LINE_SPACING))
     Story.append(Paragraph(u'Các thành viên khác trong gia đình:', DOC_STYLES['Body Style']))
     Story.append(Spacer(width=0, height=2*LINE_SPACING))
@@ -629,7 +631,7 @@ def step1(Story, candidate, heading_csv):
     table_data = [  [u'Họ và tên', u'Quan hệ', u'Tuổi', u'Nghề nghiệp']]
     for index in range(1, 10):
         row = get(candidate, 'NguoiThan' + str(index)).split(';')
-        table_data += [ [Paragraph(element, DOC_STYLES['Body Center Style']) for element in row] ] 
+        table_data += [ [Paragraph(element, DOC_STYLES['Body Center Style']) for element in row] ]
     table_style = STANDARD_TABLE
     table=Table(table_data, colWidths=[150, 120, 60, 170])
     table.setStyle(table_style)
@@ -653,9 +655,9 @@ def step1(Story, candidate, heading_csv):
     table_style = TRANSPARENT_TABLE
     table.setStyle(table_style)
     Story.append(table)
-	
+
     Story.append(Spacer(width=0, height=2*LINE_SPACING))
-    
+
     # Other achievements
     Story.append(Paragraph(u'Các thành tích khác:', DOC_STYLES['Body Style']))
     Story.append(Spacer(width=0, height=2*LINE_SPACING))
@@ -735,11 +737,11 @@ def step2(Story, candidate, heading_csv):
     table.setStyle(table_style)
     Story.append(table)
     Story.append(Spacer(width=0, height=2*LINE_SPACING))
-    
+
     # Resource contribution
     Story.append(Paragraph(u'3. Kinh phí để trang trải cho cuộc sống và học tập của bạn hiện nay là từ:', DOC_STYLES['Heading I Style']))
     local_needed_fields=['ThuNhapGiaDinh', 'ThuNhapHocBong', 'ThuNhapTienVay', 'ThuNhapLamThem']
-    table_data = [[(get(heading_csv, key)+ ': ').decode('utf-8') , moneyProcessing(candidate, key)] for key in local_needed_fields]	
+    table_data = [[(get(heading_csv, key)+ ': ').decode('utf-8') , moneyProcessing(candidate, key)] for key in local_needed_fields]
     table_data.append([(get(heading_csv, 'ThuNhapKhac')+ ': ').decode('utf-8'), Paragraph(get(candidate, 'ThuNhapKhac').decode('utf-8'), DOC_STYLES['Body Right Style'])])
     table_style = VERTICAL_TRANSPARENT_NUMERIC_TABLE
     table = Table(table_data, colWidths=[150, 250])
@@ -770,7 +772,7 @@ def step2(Story, candidate, heading_csv):
     table = Table(table_data, colWidths=[200, 40, 200, 40, 10 ])
     table.setStyle(table_style)
     Story.append(table)
-    
+
     # Other questions
     Story.append(Paragraph(('7. %s' % get(heading_csv, 'MongMuonNhanGiTuDH')).decode('utf-8'), DOC_STYLES['Heading I Style']))
     Story += [Paragraph(('<i>%s%s</i>' % (make_tabs(14), element)).decode('utf-8'), DOC_STYLES['Body Style']) for element in get(candidate, 'MongMuonNhanGiTuDH').split('\n')]
@@ -778,7 +780,7 @@ def step2(Story, candidate, heading_csv):
     Story += [Paragraph(('<i>%s%s</i>' % (make_tabs(14), element)).decode('utf-8'), DOC_STYLES['Body Style']) for element in get(candidate, 'KhoKhanLamHoSo').split('\n')]
     Story.append(Paragraph(('9. %s' % get(heading_csv, 'DeDatNhanNhu')).decode('utf-8'), DOC_STYLES['Heading I Style']))
     Story += [Paragraph(('<i>%s%s</i>' % (make_tabs(14), element)).decode('utf-8'), DOC_STYLES['Body Style']) for element in get(candidate, 'DeDatNhanNhu').split('\n')]
-    
+
 
     Story.append(PageBreak())
     return Story
@@ -833,7 +835,7 @@ def step5(Story, candidate, filename):
     # add logo
     logo_img, logo_text = createLogo(candidate)
     Story.append(Table([[logo_img, logo_text]]))
-    
+
     # heading
     Story.append(Paragraph(u'Ý KIẾN ĐÁNH GIÁ', DOC_STYLES['Title Style']))
     newLine(Story, 1)
@@ -857,4 +859,3 @@ def step5(Story, candidate, filename):
     Story.append(Paragraph((u'Tại %s, ngày %s tháng %s năm %s' % (make_tabs(30), make_tabs(5), make_tabs(5), make_tabs(10))), DOC_STYLES['Signature Style']))
     Story.append(Paragraph(u'Chữ kí người phỏng vấn%s' % make_tabs(30), DOC_STYLES['Signature Style']))
     return Story
-
