@@ -3,7 +3,7 @@
 
 import os, sys, csv
 
-CURRENT_SEMESTER = 31
+CURRENT_SEMESTER = 32
 UPPERCASE = {
     'a': 'A', 'à': 'À', 'á': 'Á', 'ả': 'Ả', 'ã': 'Ã', 'ạ': 'Ạ',
     'ă': 'Ă', 'ằ': 'Ằ', 'ắ': 'Ắ', 'ẳ': 'Ẳ', 'ẵ': 'Ẵ', 'ặ': 'Ặ',
@@ -54,6 +54,26 @@ SCHOOL_CODE = {
     'Trường Đại học Đà Lạt' : 'DALAT',
     'Trường Đại học Cần Thơ' : 'CTHO',
     'Trường khác (ghi rõ trong thư xin học bổng)' : 'KHAC',
+}
+
+SCHOOL_NB = {
+    'Trường Đại học Bách khoa Hà Nội' : '01',
+    'Trường Đại học Khoa học tự nhiên, ĐHQG Hà Nội' : '02',
+    'Trường Đại học Xây dựng' : '03',
+    'Trường Đại học Giao thông vận tải cơ sở I (tại Hà Nội)' : '04',
+    'Trường Đại học Công nghệ, ĐHQG Hà Nội' : '16',
+    'Trường Đại học Vinh' : '11',
+    'Trường Đại học Bách khoa, ĐH Đà Nẵng' : '05',
+    'Trường Đại học Kinh tế, ĐH Đà Nẵng' : '06',
+    'Trường Đại học Sư phạm, ĐH Đà Nẵng' : '07',
+    'Trường Đại học Ngoại ngữ, ĐH Đà Nẵng' : '08',
+    'Trường Đại học Bách khoa, ĐHQG TP Hồ Chí Minh' : '09',
+    'Trường Đại học Khoa học tự nhiên, ĐHQG TP Hồ Chí Minh' : '10',
+    'Trường Đại học Kinh tế Luật, ĐHQG TP Hồ Chí Minh' : '15',
+    'Trường Đại học Giao thông vận tải cơ sở II (tại TP Hồ Chí Minh)' : '14',
+    'Trường Đại học Đà Lạt' : '12',
+    'Trường Đại học Cần Thơ' : '17',
+    'Trường khác (ghi rõ trong thư xin học bổng)' : '21',
 }
 
 
@@ -167,7 +187,7 @@ def transformCSVToList(filename):
 def simplify(record):
     new_record = [""]*12
     fullname = titlestyle(record[1]).split(" ")
-    new_record[0] = ""
+    new_record[0] = str(CURRENT_SEMESTER) + SCHOOL_NB[record[8]]
     new_record[1] = " ".join(fullname[:-1])
     new_record[2] = fullname[-1]
     new_record[3] = record[2]
@@ -193,6 +213,7 @@ if __name__ == '__main__':
     newdata = sorted(newdata, key=getKeyToCompare)
     myfile = open(sys.argv[1][:-4] + '_Simplified.csv', 'w' )
     for i in xrange(len(newdata)):
+        myfile.write(newdata[i][0])
         for j in range(1, len(newdata[0])):
             myfile.write(',')
             myfile.write(str(newdata[i][j]))
