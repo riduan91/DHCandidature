@@ -166,6 +166,7 @@ def zip():
     logger.info('Việc nén file được tiến hành trong %0.2f giây' % (time.time()-start_time))
 
 if __name__ == '__main__':
+    logger.setLevel(logging.DEBUG)
     FORMAT = '[%(asctime)-15s] %(levelname)-6s %(message)s'
     DATE_FORMAT = '%d/%b/%Y %H:%M:%S'
     formatter = logging.Formatter(fmt=FORMAT, datefmt=DATE_FORMAT)
