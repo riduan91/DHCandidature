@@ -7,5 +7,5 @@ Resources/.DS_Store
 .DS_Store
 *.csv
 *.xlsx
-*.pyc
 *.log
+Scripts/*.pyc

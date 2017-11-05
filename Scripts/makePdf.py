@@ -17,6 +17,15 @@ from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER, TA_RIGHT
 from reportlab.platypus.flowables import Image as Flowable_Image
 import logging
 logger = logging.getLogger(__name__)
+FORMAT = '[%(asctime)-15s] %(levelname)-6s %(message)s'
+DATE_FORMAT = '%d/%b/%Y %H:%M:%S'
+formatter = logging.Formatter(fmt=FORMAT, datefmt=DATE_FORMAT)
+handler = logging.StreamHandler()
+handler.setFormatter(formatter)
+handler.setLevel(logging.DEBUG)
+logger.addHandler(handler)
+
+
 reportlab.rl_config.warnOnMissingFontGlyphs = 0
 
 logodir = '../Resources/Images/'
