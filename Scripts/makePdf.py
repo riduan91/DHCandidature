@@ -517,7 +517,7 @@ def buildPdf(target, index, candidate, heading_csv):
     success = 1
 
     # Create a merger (an object to merge documents) then join created documents into the merger.
-    merger = PdfFileMerger()
+    merger = PdfFileMerger(strict=False)
     input = PdfFileReader(file(TMP_PATH + filename + '_1.pdf', 'rb'))
     merger.append(input)
 
@@ -534,6 +534,7 @@ def buildPdf(target, index, candidate, heading_csv):
                 logger.info( "Không thể nối thư xin học bổng ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
                 success = 0
         except Exception as e:
+            success = 0
             formatted_lines = traceback.format_exc().splitlines()
             trace_back = "\n".join(formatted_lines)
             logger.error(trace_back)
@@ -551,6 +552,7 @@ def buildPdf(target, index, candidate, heading_csv):
                 logger.error("Không thể nối bảng điểm ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
                 success = 0
         except Exception as e:
+            success = 0
             formatted_lines = traceback.format_exc().splitlines()
             trace_back = "\n".join(formatted_lines)
             logger.error(trace_back)
@@ -568,6 +570,7 @@ def buildPdf(target, index, candidate, heading_csv):
                 logger.error("Không thể nối chứng nhận khó khăn ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
                 success = 0
         except Exception as e:
+            success = 0
             formatted_lines = traceback.format_exc().splitlines()
             trace_back = "\n".join(formatted_lines)
             logger.error(trace_back)
@@ -585,6 +588,7 @@ def buildPdf(target, index, candidate, heading_csv):
                 logger.error("Không thể các giấy tờ khác ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
                 success = 0
         except Exception as e:
+            success = 0
             formatted_lines = traceback.format_exc().splitlines()
             trace_back = "\n".join(formatted_lines)
             logger.error(trace_back)
@@ -599,11 +603,12 @@ def buildPdf(target, index, candidate, heading_csv):
         pdf_path = '%s%s/%s.pdf' % (target, SCHOOL_CODE[get(candidate, 'Truong')], filename)
         merger.write(target + SCHOOL_CODE[get(candidate, 'Truong')] + '/' + filename + '.pdf')
     except Exception as e:
+        success = 0
         formatted_lines = traceback.format_exc().splitlines()
         trace_back = "\n".join(formatted_lines)
         logger.error(trace_back)
 
-    # Delete tmp files
+    # Delete tmp files if suceess
     if success:
         for index in xrange(1, 7):
             try:
@@ -639,8 +644,13 @@ def step1(Story, candidate, heading_csv, TMP_PATH):
 	#c.drawImage(filename, inch, height - 2 * inch)
 	imw = 75
 	imh = 100
-	candidate_photo = Flowable_Image(TMP_PATH + filename + '_photo.png', imw, imh)
-	candidate_photo.hAlign = 'CENTER'
+    try:
+	    candidate_photo = Flowable_Image(TMP_PATH + filename + '_photo.png', imw, imh)
+        candidate_photo.hAlign = 'CENTER'
+    except Exception as e:
+        logger.error(e)
+        logger.error("Discard candidate photo")
+
 
     # Title
     Story.append(Paragraph(u'SƠ YẾU LÍ LỊCH', DOC_STYLES['Title Style']))
