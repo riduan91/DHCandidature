@@ -10,6 +10,7 @@ import makePdf              # for building pdf
 import os                   # for os commands
 import urllib2              # for dealing with url, proxy
 import argparse
+import makeZip
 
 API_KEY = '521350-1405134815-au8cmd567qxfnrb49'
 FORM_ID = {
@@ -33,6 +34,8 @@ SCHOOL_CODE = [
 # Specifies the .csv name and where to store pdfs
 TARGET = '../Docs/'
 UPLOAD_FOLDER = 'DH 2014'
+ZIP_SOURCE_FOLDER = "../Docs/"
+ZIP_DESTINATION_FOLDER = "../Docsreduce/ZIPPER/"
 REDUCED_TARGET = '../Docsreduce/'
 
 # Determine pool size
@@ -69,6 +72,15 @@ def prepare(path):
                 print 'Đang tạo thư mục INTERVIEW/%s' % code
                 os.mkdir('INTERVIEW/' + code)
 
+def simply_prepare(path):
+        if (not(os.path.exists(path))):
+            print 'Đang tạo thư mục %s' % path
+            os.mkdir(path)
+
+        if (not(os.path.exists(path + 'ZIPPER'))):
+            print 'Đang tạo thư mục ZIPPER'
+            os.mkdir(path + 'ZIPPER/')
+
 def log_error(error_message):
     f = open("error_log.txt","w")
     f.write(error_message)
@@ -97,8 +109,8 @@ def run(candidates):
         except Exception as e:
             print r
             print e
-            log_error(str(r))
-            log_error(str(e))
+            #log_error(str(r))
+            #log_error(str(e))
 
     pool.close()
     pool.join()
@@ -143,10 +155,19 @@ def getSubmissionsFromAPI(form_id):
     # print(candidates[0])
     return candidates
 
+def zip():
+	# keep track of start time
+    start_time = time.time()
 
+    for school_code in SCHOOL_CODE:
+        makeZip.zip(ZIP_SOURCE_FOLDER + school_code, ZIP_DESTINATION_FOLDER + school_code)
+        makeZip.zip(ZIP_SOURCE_FOLDER + "INTERVIEW/" + school_code, ZIP_DESTINATION_FOLDER + "_INTERVIEW_" + school_code )
+    print 'Việc nén file được tiến hành trong %0.2f giây' % (time.time()-start_time)
 
 if __name__ == '__main__':
     multiprocessing.freeze_support()
+    simply_prepare(REDUCED_TARGET)
+    prepare(TARGET)
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('-f', '--form', dest='form', type=str, help='Choose form to get submissions. Available choice: fr, sg, tw. To get all submissions: -f all')
@@ -156,16 +177,16 @@ if __name__ == '__main__':
         for form in FORM_ID:
             print("Generate pdf for {}".format(form))
             candidates = getSubmissionsFromAPI(FORM_ID[form])
-            prepare(TARGET)
             run(candidates)
             print("Finished pdf generator for {}".format(form))
     if args.form in FORM_ID:
         form_id = FORM_ID[args.form]
         candidates = getSubmissionsFromAPI(form_id)
-        prepare(TARGET)
         run(candidates)
     else:
         print("Please choose a form to get submission. Available choice: fr, sg, tw")
         sys.exit(1)
+
+    zip()
 
     print("done")

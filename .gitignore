@@ -1,5 +1,8 @@
 
 *.pdf
+*.zip
 Docs/*
+Docsreduce/*
 Resources/.DS_Store
 .DS_Store
+*.pyc
