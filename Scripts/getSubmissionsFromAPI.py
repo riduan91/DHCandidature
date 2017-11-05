@@ -189,7 +189,7 @@ if __name__ == '__main__':
             candidates = getSubmissionsFromAPI(FORM_ID[form])
             run(candidates)
             logger.info("Finished pdf generator for {}".format(form))
-    if args.form in FORM_ID:
+    elif args.form in FORM_ID:
         form_id = FORM_ID[args.form]
         candidates = getSubmissionsFromAPI(form_id)
         run(candidates)

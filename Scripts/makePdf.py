@@ -17,6 +17,8 @@ from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER, TA_RIGHT
 from reportlab.platypus.flowables import Image as Flowable_Image
 import logging
 import traceback
+from PyPDF2.utils import PdfReadError
+from PIL import Image
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 FORMAT = '[%(asctime)-15s] %(levelname)-6s %(message)s'
@@ -533,11 +535,11 @@ def buildPdf(target, index, candidate, heading_csv):
             else:
                 logger.info( "Không thể nối thư xin học bổng ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
                 success = 0
-        except Exception as e:
+        except PdfReadError as e:
             success = 0
             formatted_lines = traceback.format_exc().splitlines()
             trace_back = "\n".join(formatted_lines)
-            logger.error(trace_back)
+            logger.info(trace_back)
             logger.error("Failed file: {}".format(TMP_PATH + filename + '_2.pdf'))
             logger.info( "Không thể nối thư xin học bổng ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
 
@@ -551,11 +553,11 @@ def buildPdf(target, index, candidate, heading_csv):
             else:
                 logger.error("Không thể nối bảng điểm ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
                 success = 0
-        except Exception as e:
+        except PdfReadError as e:
             success = 0
             formatted_lines = traceback.format_exc().splitlines()
             trace_back = "\n".join(formatted_lines)
-            logger.error(trace_back)
+            logger.info(trace_back)
             logger.error("Failed file: {}".format(TMP_PATH + filename + '_3.pdf'))
             logger.error("Không thể nối bảng điểm ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
 
@@ -569,11 +571,11 @@ def buildPdf(target, index, candidate, heading_csv):
             else:
                 logger.error("Không thể nối chứng nhận khó khăn ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
                 success = 0
-        except Exception as e:
+        except PdfReadError as e:
             success = 0
             formatted_lines = traceback.format_exc().splitlines()
             trace_back = "\n".join(formatted_lines)
-            logger.error(trace_back)
+            logger.info(trace_back)
             logger.error("Failed file: {}".format(TMP_PATH + filename + '_4.pdf'))
             logger.error("Không thể nối chứng nhận khó khăn ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
 
@@ -587,11 +589,11 @@ def buildPdf(target, index, candidate, heading_csv):
             else:
                 logger.error("Không thể các giấy tờ khác ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
                 success = 0
-        except Exception as e:
+        except PdfReadError as e:
             success = 0
             formatted_lines = traceback.format_exc().splitlines()
             trace_back = "\n".join(formatted_lines)
-            logger.error(trace_back)
+            logger.info(trace_back)
             logger.error("Failed file: {}".format(TMP_PATH + filename + '_5.pdf'))
             logger.error("Không thể các giấy tờ khác ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
 
@@ -617,7 +619,7 @@ def buildPdf(target, index, candidate, heading_csv):
                 pass
 
     try:
-        os.remove('../Docs/tmp/' + filename2 + '_photo.png')
+        os.remove('../Docs/tmp/' + filename2 + '_photo')
     except OSError as e:
         pass
 
@@ -640,16 +642,19 @@ def step1(Story, candidate, heading_csv, TMP_PATH):
     # add AnhCaNhan
     candidate_photo = ""
     if get(candidate, 'AnhCaNhan') != "yes" and get(candidate, 'AnhCaNhan') != "":
-        download(get(candidate, 'AnhCaNhan'), TMP_PATH + filename + '_photo.png')
+        try:
+            download(get(candidate, 'AnhCaNhan'), TMP_PATH + filename + '_photo')
+            im=Image.open(TMP_PATH + filename + '_photo')
+            imw = 75
+            imh = 100
+            candidate_photo = Flowable_Image(TMP_PATH + filename + '_photo', imw, imh)
+            candidate_photo.hAlign = 'CENTER'
+        except IOError as e:
+            logger.error(e)
+            logger.error("Invalid image. Discard candidate photo {}".format(filename))
+
 	#c.drawImage(filename, inch, height - 2 * inch)
-	imw = 75
-	imh = 100
-    try:
-	    candidate_photo = Flowable_Image(TMP_PATH + filename + '_photo.png', imw, imh)
-        candidate_photo.hAlign = 'CENTER'
-    except Exception as e:
-        logger.error(e)
-        logger.error("Discard candidate photo")
+
 
 
     # Title
