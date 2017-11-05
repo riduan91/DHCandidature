@@ -33,6 +33,16 @@ SCHOOL_CODE = {
 
 SOURCE_FOLDER = "../Docs/"
 DESTINATION_FOLDER = "../Docsreduce/ZIPPER/"
+REDUCED_TARGET = '../Docsreduce/'
+
+def simply_prepare(path):
+        if (not(os.path.exists(path))):
+            print('Đang tạo thư mục %s' % path)
+            os.mkdir(path)
+
+        if (not(os.path.exists(path + 'ZIPPER'))):
+            print('Đang tạo thư mục ZIPPER')
+            os.mkdir(path + 'ZIPPER/')
 
 
 def zip(src, dst):
@@ -60,6 +70,7 @@ def zip(src, dst):
         return None, src
 
 if __name__ == '__main__':
+    simply_prepare(REDUCED_TARGET)
     for school_code in SCHOOL_CODE.values():
         zip(SOURCE_FOLDER + school_code, DESTINATION_FOLDER + school_code)
         zip(SOURCE_FOLDER + "INTERVIEW/" + school_code, DESTINATION_FOLDER + school_code + "_INTERVIEW")

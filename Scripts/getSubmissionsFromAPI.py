@@ -37,9 +37,6 @@ SCHOOL_CODE = [
 # Specifies the .csv name and where to store pdfs
 TARGET = '../Docs/'
 UPLOAD_FOLDER = 'DH 2014'
-ZIP_SOURCE_FOLDER = "../Docs/"
-ZIP_DESTINATION_FOLDER = "../Docsreduce/ZIPPER/"
-REDUCED_TARGET = '../Docsreduce/'
 
 # Determine pool size
 NB_CPUS = multiprocessing.cpu_count()
@@ -75,14 +72,6 @@ def prepare(path):
                 logger.info('Đang tạo thư mục INTERVIEW/%s' % code)
                 os.mkdir('INTERVIEW/' + code)
 
-def simply_prepare(path):
-        if (not(os.path.exists(path))):
-            logger.info('Đang tạo thư mục %s' % path)
-            os.mkdir(path)
-
-        if (not(os.path.exists(path + 'ZIPPER'))):
-            logger.info('Đang tạo thư mục ZIPPER')
-            os.mkdir(path + 'ZIPPER/')
 
 def run(candidates):
     logger.info('Tạo pdf tương ứng với từng bạn sinh viên và phân loại theo tên trường...')
@@ -150,15 +139,6 @@ def getSubmissionsFromAPI(form_id):
     # logger.info(candidates[0])
     return candidates
 
-def zip():
-	# keep track of start time
-    start_time = time.time()
-
-    for school_code in SCHOOL_CODE:
-        makeZip.zip(ZIP_SOURCE_FOLDER + school_code, ZIP_DESTINATION_FOLDER + school_code)
-        makeZip.zip(ZIP_SOURCE_FOLDER + "INTERVIEW/" + school_code, ZIP_DESTINATION_FOLDER + "_INTERVIEW_" + school_code )
-    logger.info('Việc nén file được tiến hành trong %0.2f giây' % (time.time()-start_time))
-
 if __name__ == '__main__':
     logger.setLevel(logging.DEBUG)
     FORMAT = '[%(asctime)-15s] %(levelname)-6s %(message)s'
@@ -176,7 +156,6 @@ if __name__ == '__main__':
 
 
     multiprocessing.freeze_support()
-    simply_prepare(REDUCED_TARGET)
     prepare(TARGET)
 
     parser = argparse.ArgumentParser(description=__doc__)
@@ -196,7 +175,5 @@ if __name__ == '__main__':
     else:
         logger.info("Please choose a form to get submission. Available choice: fr, sg, tw")
         sys.exit(1)
-
-    zip()
 
     logger.info("done")
