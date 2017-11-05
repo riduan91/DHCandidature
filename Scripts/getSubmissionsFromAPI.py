@@ -9,9 +9,14 @@ import time                 # for time measurement
 import makePdf              # for building pdf
 import os                   # for os commands
 import urllib2              # for dealing with url, proxy
+import argparse
 
 API_KEY = '521350-1405134815-au8cmd567qxfnrb49'
-FORM_DH_FRANCE_ID = "1006311"
+FORM_ID = {
+    "fr": "1006311",
+    "sg": "2266863",
+    "tw": "2272966"
+}
 
 URL_SUBMISSION_FORMAT = "https://123contactform.com/api/forms/{}/submissions.json"
 URL_SUBMISSION_COUNT_FORMAT = "https://www.123contactform.com/api/forms/{}/submissions/count.json"
@@ -29,8 +34,6 @@ SCHOOL_CODE = [
 TARGET = '../Docs/'
 UPLOAD_FOLDER = 'DH 2014'
 REDUCED_TARGET = '../Docsreduce/'
-
-CANDIDATE_LIST = []
 
 # Determine pool size
 NB_CPUS = multiprocessing.cpu_count()
@@ -65,7 +68,13 @@ def prepare(path):
             if (not(os.path.exists('INTERVIEW/' + code))):
                 print 'Đang tạo thư mục INTERVIEW/%s' % code
                 os.mkdir('INTERVIEW/' + code)
-def run():
+
+def log_error(error_message):
+    f = open("error_log.txt","w")
+    f.write(error_message)
+    f.close()
+
+def run(candidates):
     print 'Tạo pdf tương ứng với từng bạn sinh viên và phân loại theo tên trường...'
 
     # create thread POOL w.r.t the number of available cpus
@@ -77,7 +86,7 @@ def run():
 
     # assign pdf build tasks to pool
     heading_csv = makePdf.FIELD_NAMES
-    task_args = [(TARGET, index, CANDIDATE_LIST[index], heading_csv) for index in range(len(CANDIDATE_LIST))]
+    task_args = [(TARGET, index, candidates[index], heading_csv) for index in range(len(candidates))]
     apply_objects = [pool.apply_async(makePdf.buildPdf, args) for args in task_args]
 
     # wait for execution end
@@ -86,7 +95,10 @@ def run():
             pdfname = r.get()
             print 'File %s đã được tạo' % pdfname
         except Exception as e:
+            print r
             print e
+            log_error(str(r))
+            log_error(str(e))
 
     pool.close()
     pool.join()
@@ -134,10 +146,26 @@ def getSubmissionsFromAPI(form_id):
 
 
 if __name__ == '__main__':
-    CANDIDATE_LIST = getSubmissionsFromAPI(FORM_DH_FRANCE_ID)
     multiprocessing.freeze_support()
 
-    # init
-    prepare(TARGET)
-    run()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('-f', '--form', dest='form', type=str, help='Choose form to get submissions. Available choice: fr, sg, tw. To get all submissions: -f all')
+
+    args = parser.parse_args()
+    if args.form == "all":
+        for form in FORM_ID:
+            print("Generate pdf for {}".format(form))
+            candidates = getSubmissionsFromAPI(FORM_ID[form])
+            prepare(TARGET)
+            run(candidates)
+            print("Finished pdf generator for {}".format(form))
+    if args.form in FORM_ID:
+        form_id = FORM_ID[args.form]
+        candidates = getSubmissionsFromAPI(form_id)
+        prepare(TARGET)
+        run(candidates)
+    else:
+        print("Please choose a form to get submission. Available choice: fr, sg, tw")
+        sys.exit(1)
+
     print("done")
