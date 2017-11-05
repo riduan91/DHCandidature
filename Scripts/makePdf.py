@@ -26,6 +26,10 @@ handler = logging.StreamHandler()
 handler.setFormatter(formatter)
 handler.setLevel(logging.DEBUG)
 logger.addHandler(handler)
+file_handler = logging.FileHandler("error.log")
+file_handler.setFormatter(formatter)
+file_handler.setLevel(logging.ERROR)
+logger.addHandler(file_handler)
 
 
 reportlab.rl_config.warnOnMissingFontGlyphs = 0
@@ -533,6 +537,9 @@ def buildPdf(target, index, candidate, heading_csv):
             formatted_lines = traceback.format_exc().splitlines()
             trace_back = "\n".join(formatted_lines)
             logger.error(trace_back)
+            logger.error("Failed file: {}"..format(TMP_PATH + filename + '_2.pdf'))
+            logger.info( "Không thể nối thư xin học bổng ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
+
 
     # Bảng điểm
     if has_file['BangDiemScan']==1:
@@ -547,6 +554,9 @@ def buildPdf(target, index, candidate, heading_csv):
             formatted_lines = traceback.format_exc().splitlines()
             trace_back = "\n".join(formatted_lines)
             logger.error(trace_back)
+            logger.error("Failed file: {}"..format(TMP_PATH + filename + '_3.pdf'))
+            logger.error("Không thể nối bảng điểm ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
+
 
     # Chứng nhận hoàn cảnh khó khăn/Sổ hộ nghèo
     if has_file['ChungNhanKhoKhanScan']==1:
@@ -561,6 +571,9 @@ def buildPdf(target, index, candidate, heading_csv):
             formatted_lines = traceback.format_exc().splitlines()
             trace_back = "\n".join(formatted_lines)
             logger.error(trace_back)
+            logger.error("Failed file: {}"..format(TMP_PATH + filename + '_4.pdf'))
+            logger.error("Không thể nối chứng nhận khó khăn ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
+
 
     # Giấy tờ khác
     if has_file['GiayToKhacScan']==1:
@@ -575,13 +588,11 @@ def buildPdf(target, index, candidate, heading_csv):
             formatted_lines = traceback.format_exc().splitlines()
             trace_back = "\n".join(formatted_lines)
             logger.error(trace_back)
-    try:
-        input = PdfFileReader(file(TMP_PATH + filename + '_6.pdf', 'rb'))
-        merger.append(input)
-    except Exception as e:
-        formatted_lines = traceback.format_exc().splitlines()
-        trace_back = "\n".join(formatted_lines)
-        logger.error(trace_back)
+            logger.error("Failed file: {}"..format(TMP_PATH + filename + '_5.pdf'))
+            logger.error("Không thể các giấy tờ khác ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
+
+    input = PdfFileReader(file(TMP_PATH + filename + '_6.pdf', 'rb'))
+    merger.append(input)
 
     # final pdf path
     try:

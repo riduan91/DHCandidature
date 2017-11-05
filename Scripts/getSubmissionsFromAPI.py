@@ -84,11 +84,6 @@ def simply_prepare(path):
             logger.info('Đang tạo thư mục ZIPPER')
             os.mkdir(path + 'ZIPPER/')
 
-def log_error(error_message):
-    f = open("error_log.txt","w")
-    f.write(error_message)
-    f.close()
-
 def run(candidates):
     logger.info('Tạo pdf tương ứng với từng bạn sinh viên và phân loại theo tên trường...')
 
@@ -111,7 +106,6 @@ def run(candidates):
             logger.info('File %s đã được tạo' % pdfname)
         except Exception as e:
             logger.error(e)
-            log_error(str(e))
 
     pool.close()
     pool.join()
