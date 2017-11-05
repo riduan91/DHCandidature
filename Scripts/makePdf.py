@@ -16,6 +16,7 @@ from reportlab.lib.units import inch
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER, TA_RIGHT
 from reportlab.platypus.flowables import Image as Flowable_Image
 import logging
+import traceback
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 FORMAT = '[%(asctime)-15s] %(levelname)-6s %(message)s'
@@ -528,42 +529,68 @@ def buildPdf(target, index, candidate, heading_csv):
             else:
                 logger.info( "Không thể nối thư xin học bổng ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
                 success = 0
-        except IOError as e:
-            logger.error(e)
+        except Exception as e:
+            formatted_lines = traceback.format_exc().splitlines()
+            trace_back = "\n".join(formatted_lines)
+            logger.error(trace_back)
 
     # Bảng điểm
     if has_file['BangDiemScan']==1:
-        input = PdfFileReader(file(TMP_PATH + filename + '_3.pdf', 'rb'))
-        if not input.isEncrypted:
-            merger.append(input)
-        else:
-            logger.info("Không thể nối bảng điểm ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
-            success = 0
+        try:
+            input = PdfFileReader(file(TMP_PATH + filename + '_3.pdf', 'rb'))
+            if not input.isEncrypted:
+                merger.append(input)
+            else:
+                logger.error("Không thể nối bảng điểm ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
+                success = 0
+        except Exception as e:
+            formatted_lines = traceback.format_exc().splitlines()
+            trace_back = "\n".join(formatted_lines)
+            logger.error(trace_back)
 
     # Chứng nhận hoàn cảnh khó khăn/Sổ hộ nghèo
     if has_file['ChungNhanKhoKhanScan']==1:
-        input = PdfFileReader(file(TMP_PATH + filename + '_4.pdf', 'rb'))
-        if not input.isEncrypted:
-            merger.append(input)
-        else:
-            logger.info("Không thể nối chứng nhận khó khăn ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
-            success = 0
+        try:
+            input = PdfFileReader(file(TMP_PATH + filename + '_4.pdf', 'rb'))
+            if not input.isEncrypted:
+                merger.append(input)
+            else:
+                logger.error("Không thể nối chứng nhận khó khăn ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
+                success = 0
+        except Exception as e:
+            formatted_lines = traceback.format_exc().splitlines()
+            trace_back = "\n".join(formatted_lines)
+            logger.error(trace_back)
 
     # Giấy tờ khác
     if has_file['GiayToKhacScan']==1:
-        input = PdfFileReader(file(TMP_PATH + filename + '_5.pdf', 'rb'))
-        if not input.isEncrypted:
-            merger.append(input)
-        else:
-            logger.info("Không thể các giấy tờ khác ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
-            success = 0
-
-    input = PdfFileReader(file(TMP_PATH + filename + '_6.pdf', 'rb'))
-    merger.append(input)
+        try:
+            input = PdfFileReader(file(TMP_PATH + filename + '_5.pdf', 'rb'))
+            if not input.isEncrypted:
+                merger.append(input)
+            else:
+                logger.error("Không thể các giấy tờ khác ở hồ sơ thứ " + str(index) + ". Yêu cầu thực hiện thủ công.")
+                success = 0
+        except Exception as e:
+            formatted_lines = traceback.format_exc().splitlines()
+            trace_back = "\n".join(formatted_lines)
+            logger.error(trace_back)
+    try:
+        input = PdfFileReader(file(TMP_PATH + filename + '_6.pdf', 'rb'))
+        merger.append(input)
+    except Exception as e:
+        formatted_lines = traceback.format_exc().splitlines()
+        trace_back = "\n".join(formatted_lines)
+        logger.error(trace_back)
 
     # final pdf path
-    pdf_path = '%s%s/%s.pdf' % (target, SCHOOL_CODE[get(candidate, 'Truong')], filename)
-    merger.write(target + SCHOOL_CODE[get(candidate, 'Truong')] + '/' + filename + '.pdf')
+    try:
+        pdf_path = '%s%s/%s.pdf' % (target, SCHOOL_CODE[get(candidate, 'Truong')], filename)
+        merger.write(target + SCHOOL_CODE[get(candidate, 'Truong')] + '/' + filename + '.pdf')
+    except Exception as e:
+        formatted_lines = traceback.format_exc().splitlines()
+        trace_back = "\n".join(formatted_lines)
+        logger.error(trace_back)
 
     # Delete tmp files
     if success:
