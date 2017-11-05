@@ -1,3 +1,5 @@
 
 *.pdf
 Docs/*
+Resources/.DS_Store
+.DS_Store
