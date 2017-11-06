@@ -153,6 +153,13 @@ FIELD_NAMES = ['HoVaTen', 'GioiTinh', 'NgaySinh', 'MaSoSV','NamThu', 'KhoaNganh'
                'HinhThucThu', 'KhungVietThu', 'KhungScanThu', 'BangDiemScan', 'ChungNhanKhoKhanScan', 'GiayToKhacScan',
                'GiayToKhacList', 'AnhCaNhan']
 
+FIELD_NAMES_FULL = {'HoVaTen' : 'Họ và Tên', 'GioiTinh': 'Giới tính', 'NgaySinh': 'Ngày Sinh', 'MaSoSV': 'Mã số SV', 'NamThu': 'Năm Thứ', 'KhoaNganh': 'Khoa ngành',
+                    'Lop': 'Lớp', 'Truong': 'Trường', 'DiaChiSinh': 'Địa chỉ sinh', 'DiaChiTru': 'Địa chỉ trú', 'DienThoai': 'Điện thoại', 'Email': 'Email',
+                    'NhaO': 'Nhà ở', 'DiLai': 'Đi lại', 'TienAn': 'Tiền ăn', 'TienHoc': 'Tiền học', 'TienHocThem': 'Tiền học thêm', 'VuiChoi': 'Vui chơi', 'CacKhoanKhac': 'Các khoản khác',
+                    'ThuNhapGiaDinh': 'Thu nhập gia đình', 'ThuNhapHocBong': 'Thu nhập học bổng', 'ThuNhapTienVay': 'Thu nhập tiền vay', 'ThuNhapLamThem': 'Thu nhập làm thêm', 'ThuNhapKhac': 'Thu nhập khác',
+                    'DeDatNhanNhu': 'Đề đạt nhắn nhủ', 'MongMuonNhanGiTuDH': 'Mong muốn nhận gì từ Đồng Hành', 'KhoKhanLamHoSo': 'Khó khăn làm hồ sơ'
+}
+
 # Get the index (position of column) of each fields
 INDEX_OF_KEY = {}
 for index in range(0, len(FIELD_NAMES)):
@@ -664,14 +671,14 @@ def step1(Story, candidate, heading_csv, TMP_PATH):
     Story.append(Paragraph(u'I. Thông tin cá nhân', DOC_STYLES['Heading I Style']))
 
     local_needed_fields = ['HoVaTen', 'GioiTinh', 'NgaySinh', 'MaSoSV','NamThu', 'KhoaNganh']
-    table_data = [ [(get(heading_csv, key, True) + ':').decode('utf-8'), Paragraph(get(candidate, key).decode('utf-8'), DOC_STYLES['Italic Body Style']), candidate_photo] for key in local_needed_fields]
+    table_data = [ [(FIELD_NAMES_FULL[key] + ':').decode('utf-8'), Paragraph(get(candidate, key).decode('utf-8'), DOC_STYLES['Italic Body Style']), candidate_photo] for key in local_needed_fields]
     table_style = TRANSPARENT_TABLE_WITH_MERGE
     table = Table(table_data, colWidths=[136, 240, 120])
     table.setStyle(table_style)
     Story.append(table)
 
     local_needed_fields = ['Lop', 'Truong', 'DiaChiSinh', 'DiaChiTru', 'DienThoai', 'Email']
-    table_data = [ [(get(heading_csv, key, True) + ':').decode('utf-8'), Paragraph(get(candidate, key).decode('utf-8'), DOC_STYLES['Italic Body Style'])] for key in local_needed_fields]
+    table_data = [ [(FIELD_NAMES_FULL[key] + ':').decode('utf-8'), Paragraph(get(candidate, key).decode('utf-8'), DOC_STYLES['Italic Body Style'])] for key in local_needed_fields]
     table_style = TRANSPARENT_TABLE
     table = Table(table_data, colWidths=[136, 360])
     table.setStyle(table_style)
@@ -706,7 +713,7 @@ def step1(Story, candidate, heading_csv, TMP_PATH):
     Story.append(Paragraph(u'III. Kết quả học tập', DOC_STYLES['Heading I Style']))
     Story.append(Paragraph(u'Điểm trung bình các học kì đại học:', DOC_STYLES['Body Style']))
     Story.append(Spacer(width=0, height=2*LINE_SPACING))
-    table_data = [  [u'Học kì I', u'Học kì II', u'Học kì III'], \
+    table_data = [  [u'Học kì I năm I', u'Học kì II năm I', u'Học kì I năm II'], \
                     [get(candidate, key) for key in ['DiemKi1', 'DiemKi2', 'DiemKi3'] ]]
     table = Table(table_data, colWidths=[160, 160, 160])
     table_style = HORIZONTAL_NUMERIC_TABLE
@@ -785,7 +792,7 @@ def step2(Story, candidate, heading_csv):
     # Monthly costs
     Story.append(Paragraph(u'1. Chi phí hằng tháng:', DOC_STYLES['Heading I Style']))
     local_needed_fields=['NhaO', 'DiLai', 'TienAn', 'TienHoc', 'TienHocThem', 'VuiChoi', 'CacKhoanKhac']
-    table_data = [[(get(heading_csv, key)+ ': ').decode('utf-8') , moneyProcessing(candidate, key)] for key in local_needed_fields]
+    table_data = [[(FIELD_NAMES_FULL[key]+ ': ').decode('utf-8') , moneyProcessing(candidate, key)] for key in local_needed_fields]
     table_style = VERTICAL_TRANSPARENT_NUMERIC_TABLE
     table = Table(table_data, colWidths=[150, 250])
     table.setStyle(table_style)
@@ -804,8 +811,8 @@ def step2(Story, candidate, heading_csv):
     # Resource contribution
     Story.append(Paragraph(u'3. Kinh phí để trang trải cho cuộc sống và học tập của bạn hiện nay là từ:', DOC_STYLES['Heading I Style']))
     local_needed_fields=['ThuNhapGiaDinh', 'ThuNhapHocBong', 'ThuNhapTienVay', 'ThuNhapLamThem']
-    table_data = [[(get(heading_csv, key)+ ': ').decode('utf-8') , moneyProcessing(candidate, key)] for key in local_needed_fields]
-    table_data.append([(get(heading_csv, 'ThuNhapKhac')+ ': ').decode('utf-8'), Paragraph(get(candidate, 'ThuNhapKhac').decode('utf-8'), DOC_STYLES['Body Right Style'])])
+    table_data = [[(FIELD_NAMES_FULL[key]+ ': ').decode('utf-8') , moneyProcessing(candidate, key)] for key in local_needed_fields]
+    table_data.append([(FIELD_NAMES_FULL[key]+ ': ').decode('utf-8'), Paragraph(get(candidate, 'ThuNhapKhac').decode('utf-8'), DOC_STYLES['Body Right Style'])])
     table_style = VERTICAL_TRANSPARENT_NUMERIC_TABLE
     table = Table(table_data, colWidths=[150, 250])
     table.setStyle(table_style)
@@ -837,11 +844,11 @@ def step2(Story, candidate, heading_csv):
     Story.append(table)
 
     # Other questions
-    Story.append(Paragraph(('7. %s' % get(heading_csv, 'MongMuonNhanGiTuDH')).decode('utf-8'), DOC_STYLES['Heading I Style']))
+    Story.append(Paragraph(('7. %s' % FIELD_NAMES_FULL['MongMuonNhanGiTuDH']).decode('utf-8'), DOC_STYLES['Heading I Style']))
     Story += [Paragraph(('<i>%s%s</i>' % (make_tabs(14), element)).decode('utf-8'), DOC_STYLES['Body Style']) for element in get(candidate, 'MongMuonNhanGiTuDH').split('\n')]
-    Story.append(Paragraph(('8. %s' % get(heading_csv, 'KhoKhanLamHoSo')).decode('utf-8'), DOC_STYLES['Heading I Style']))
+    Story.append(Paragraph(('8. %s' % FIELD_NAMES_FULL['KhoKhanLamHoSo']).decode('utf-8'), DOC_STYLES['Heading I Style']))
     Story += [Paragraph(('<i>%s%s</i>' % (make_tabs(14), element)).decode('utf-8'), DOC_STYLES['Body Style']) for element in get(candidate, 'KhoKhanLamHoSo').split('\n')]
-    Story.append(Paragraph(('9. %s' % get(heading_csv, 'DeDatNhanNhu')).decode('utf-8'), DOC_STYLES['Heading I Style']))
+    Story.append(Paragraph(('9. %s' % FIELD_NAMES_FULL['DeDatNhanNhu']).decode('utf-8'), DOC_STYLES['Heading I Style']))
     Story += [Paragraph(('<i>%s%s</i>' % (make_tabs(14), element)).decode('utf-8'), DOC_STYLES['Body Style']) for element in get(candidate, 'DeDatNhanNhu').split('\n')]
 
 
