@@ -153,11 +153,12 @@ FIELD_NAMES = ['HoVaTen', 'GioiTinh', 'NgaySinh', 'MaSoSV','NamThu', 'KhoaNganh'
                'HinhThucThu', 'KhungVietThu', 'KhungScanThu', 'BangDiemScan', 'ChungNhanKhoKhanScan', 'GiayToKhacScan',
                'GiayToKhacList', 'AnhCaNhan']
 
-FIELD_NAMES_FULL = {'HoVaTen' : 'Họ và Tên', 'GioiTinh': 'Giới tính', 'NgaySinh': 'Ngày Sinh', 'MaSoSV': 'Mã số SV', 'NamThu': 'Năm Thứ', 'KhoaNganh': 'Khoa ngành',
-                    'Lop': 'Lớp', 'Truong': 'Trường', 'DiaChiSinh': 'Địa chỉ sinh', 'DiaChiTru': 'Địa chỉ trú', 'DienThoai': 'Điện thoại', 'Email': 'Email',
-                    'NhaO': 'Nhà ở', 'DiLai': 'Đi lại', 'TienAn': 'Tiền ăn', 'TienHoc': 'Tiền học', 'TienHocThem': 'Tiền học thêm', 'VuiChoi': 'Vui chơi', 'CacKhoanKhac': 'Các khoản khác',
-                    'ThuNhapGiaDinh': 'Thu nhập gia đình', 'ThuNhapHocBong': 'Thu nhập học bổng', 'ThuNhapTienVay': 'Thu nhập tiền vay', 'ThuNhapLamThem': 'Thu nhập làm thêm', 'ThuNhapKhac': 'Thu nhập khác',
-                    'DeDatNhanNhu': 'Đề đạt nhắn nhủ', 'MongMuonNhanGiTuDH': 'Mong muốn nhận gì từ Đồng Hành', 'KhoKhanLamHoSo': 'Khó khăn làm hồ sơ'
+FIELD_NAMES_FULL = {'HoVaTen' : 'Họ và tên', 'GioiTinh': 'Giới tính', 'NgaySinh': 'Ngày sinh', 'MaSoSV': 'Mã số sinh viên', 'NamThu': 'Sinh viên năm thứ', 'KhoaNganh': 'Khoa/Ngành',
+                    'Lop': 'Lớp', 'Truong': 'Trường', 'DiaChiSinh': 'Địa chỉ hiện tại', 'DiaChiTru': 'Địa chỉ thường trú', 'DienThoai': 'Điện thoại', 'Email': 'Email',
+                    'NhaO': 'Nhà ở', 'DiLai': 'Đi lại', 'TienAn': 'Tiền ăn', 'TienHoc': 'Tiền học chính khoá', 'TienHocThem': 'Tiền học thêm', 'VuiChoi': 'Vui chơi, giải trí', 'CacKhoanKhac': 'Các khoản khác',
+                    'ThuNhapGiaDinh': 'Thu nhập gia đình', 'ThuNhapHocBong': 'Học bổng', 'ThuNhapTienVay': 'Tiền vay ngân hàng', 'ThuNhapLamThem': 'Thu nhập làm thêm', 'ThuNhapKhac': 'Thu nhập khác',
+                    'DeDatNhanNhu': 'Bạn có đề đạt, nhắn gửi gì tới quỹ học bổng Đồng Hành ?', 'MongMuonNhanGiTuDH': 'Bạn mong muốn nhận được gì từ Đồng Hành ngoài việc giúp đỡ tài chính?',
+					'KhoKhanLamHoSo': 'Bạn gặp khó khăn gì trong quá trình làm hồ sơ xin học bổng Đồng Hành?'
 }
 
 # Get the index (position of column) of each fields
@@ -609,8 +610,11 @@ def buildPdf(target, index, candidate, heading_csv):
 
     # final pdf path
     try:
-        pdf_path = '%s%s/%s.pdf' % (target, SCHOOL_CODE[get(candidate, 'Truong')], filename)
-        merger.write(target + SCHOOL_CODE[get(candidate, 'Truong')] + '/' + filename + '.pdf')
+        # pdf_path = '%s%s/%s.pdf' % (target, SCHOOL_CODE[get(candidate, 'Truong')], filename)
+        if get(candidate, 'KhungVietThu') == "" and has_file['ThuXinHocBongScan'] == 0:
+            merger.write(target + SCHOOL_CODE[get(candidate, 'Truong')] + '/DISQUALIFIED/'+ filename + '.pdf')
+        else:
+            merger.write(target + SCHOOL_CODE[get(candidate, 'Truong')] + '/' + filename + '.pdf')
     except Exception as e:
         success = 0
         formatted_lines = traceback.format_exc().splitlines()
@@ -812,7 +816,7 @@ def step2(Story, candidate, heading_csv):
     Story.append(Paragraph(u'3. Kinh phí để trang trải cho cuộc sống và học tập của bạn hiện nay là từ:', DOC_STYLES['Heading I Style']))
     local_needed_fields=['ThuNhapGiaDinh', 'ThuNhapHocBong', 'ThuNhapTienVay', 'ThuNhapLamThem']
     table_data = [[(FIELD_NAMES_FULL[key]+ ': ').decode('utf-8') , moneyProcessing(candidate, key)] for key in local_needed_fields]
-    table_data.append([(FIELD_NAMES_FULL[key]+ ': ').decode('utf-8'), Paragraph(get(candidate, 'ThuNhapKhac').decode('utf-8'), DOC_STYLES['Body Right Style'])])
+    table_data.append([(FIELD_NAMES_FULL['ThuNhapKhac']+ ': ').decode('utf-8'), Paragraph(get(candidate, 'ThuNhapKhac').decode('utf-8'), DOC_STYLES['Body Right Style'])])
     table_style = VERTICAL_TRANSPARENT_NUMERIC_TABLE
     table = Table(table_data, colWidths=[150, 250])
     table.setStyle(table_style)
