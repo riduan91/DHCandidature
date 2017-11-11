@@ -864,7 +864,7 @@ def step3(Story, candidate):
         This function creates "Thư xin học bổng đánh máy"
     '''
 
-    if get(candidate,'HinhThucThu')=="Đánh máy trực tiếp tại đây":
+    if get(candidate,'KhungVietThu')!= "":
         # add logo
         logo_img, logo_text = createLogo(candidate)
         Story.append(Table([[logo_img, logo_text]]))
