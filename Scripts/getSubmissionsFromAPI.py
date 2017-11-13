@@ -12,6 +12,7 @@ import urllib2              # for dealing with url, proxy
 import argparse
 import makeZip
 import logging
+from fixtures import *
 
 logger = logging.getLogger(__name__)
 
@@ -27,12 +28,6 @@ URL_SUBMISSION_COUNT_FORMAT = "https://www.123contactform.com/api/forms/{}/submi
 
 PAGE_SIZE = 50
 
-SCHOOL_CODE = [
-	'BKHN', 'TNHN', 'XD', 'GTVT1', 'CNHN',
-	'VINH', 'BKDN', 'KTDN','SPDN',
-	'NNDN', 'BKHCM', 'TNHCM', 'KTLHCM',
-	'GTVT2', 'DALAT', 'CTHO', 'SPKTHCM', 'KHAC'
-]
 
 # Specifies the .csv name and where to store pdfs
 TARGET = '../Docs/'
@@ -58,7 +53,7 @@ def prepare(path):
 		logger.info('Đang tạo thư mục tmp')
 		os.mkdir('tmp')
 
-	for code in SCHOOL_CODE:
+	for code in SCHOOL_CODE.values():
 		if (not(os.path.exists(code))):
 			logger.info('Đang tạo thư mục %s' % code)
 			os.mkdir(code)
@@ -69,7 +64,7 @@ def prepare(path):
 			logger.info('Đang tạo thư mục INTERVIEW')
 			os.mkdir('INTERVIEW')
 
-		for code in SCHOOL_CODE:
+		for code in SCHOOL_CODE.values():
 			if (not(os.path.exists('INTERVIEW/' + code))):
 				logger.info('Đang tạo thư mục INTERVIEW/%s' % code)
 				os.mkdir('INTERVIEW/' + code)

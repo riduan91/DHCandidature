@@ -19,6 +19,8 @@ import logging
 import traceback
 from PyPDF2.utils import PdfReadError
 from PIL import Image
+from fixtures import *
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 FORMAT = '[%(asctime)-15s] %(levelname)-6s %(message)s'
@@ -105,28 +107,6 @@ REMOVE_ACCENT = {
 	'\xcc\x80': '', '\xcc\x81': '', '\xcc\x89': '', '\xcc\x83': '', '\xbb\xa4': '',
     ' ': ' ',
     }
-
-# Abbreviations for universities' names
-SCHOOL_CODE = {
-    'Trường Đại học Bách khoa Hà Nội' : 'BKHN',
-    'Trường Đại học Khoa học tự nhiên, ĐHQG Hà Nội' : 'TNHN',
-    'Trường Đại học Xây dựng' : 'XD',
-    'Trường Đại học Giao thông vận tải cơ sở I (tại Hà Nội)' : 'GTVT1',
-    'Trường Đại học Công nghệ, ĐHQG Hà Nội' : 'CNHN',
-    'Trường Đại học Vinh' : 'VINH',
-    'Trường Đại học Bách khoa, ĐH Đà Nẵng' : 'BKDN',
-    'Trường Đại học Kinh tế, ĐH Đà Nẵng' : 'KTDN',
-    'Trường Đại học Sư phạm, ĐH Đà Nẵng' : 'SPDN',
-    'Trường Đại học Ngoại ngữ, ĐH Đà Nẵng' : 'NNDN',
-    'Trường Đại học Bách khoa, ĐHQG TP Hồ Chí Minh' : 'BKHCM',
-    'Trường Đại học Khoa học tự nhiên, ĐHQG TP Hồ Chí Minh' : 'TNHCM',
-    'Trường Đại học Kinh tế Luật, ĐHQG TP Hồ Chí Minh' : 'KTLHCM',
-    'Trường Đại học Giao thông vận tải cơ sở II (tại TP Hồ Chí Minh)' : 'GTVT2',
-    'Trường Đại học Đà Lạt' : 'DALAT',
-    'Trường Đại học Cần Thơ' : 'CTHO',
-    'Trường Đại học Sư phạm Kỹ thuật TP Hồ Chí Minh' : 'SPKTHCM',
-    'Trường khác (ghi rõ trong thư xin học bổng)' : 'KHAC',
-}
 
 # Icon for Yes/No questions: cross for "Yes", blank for "No"
 # YES_NO_ICON = {'yes': "[ X ]", 'Yes': u"[ X ]", 'No': "[    ]", 'no': "[    ]", u'Có': "[ X ]", u'Không': "[    ]", u'có': "[ X ]", u'không': "[    ]", 'Không': "[    ]", 'Có': "[ X ]", 'Chưa từng': "[    ]", u'Chưa từng': "[     ]", '': "[     ]"}

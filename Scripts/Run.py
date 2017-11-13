@@ -12,14 +12,7 @@ import urllib2              # for dealing with url, proxy
 import makeZip              # for file compression
 #import upload_google_drive  # for uploading to google drive
 import csv                  # for csv form
-
-# Abbreviations for universities' names
-SCHOOL_CODE = [
-    'BKHN', 'TNHN', 'XD', 'GTVT1', 'CNHN',
-    'VINH', 'BKDN', 'KTDN','SPDN',
-    'NNDN', 'BKHCM', 'TNHCM', 'KTLHCM',
-    'GTVT2', 'DALAT', 'CTHO', 'SPKTHCM', 'KHAC'
-]
+from fixtures import *
 
 ZIP_SOURCE_FOLDER = "../Docs/"
 ZIP_DESTINATION_FOLDER = "../Docsreduce/ZIPPER/"
@@ -58,9 +51,9 @@ def prepare(path):
 	os.chdir(path)
 	if (not(os.path.exists('tmp'))):
 	    print 'Đang tạo thư mục tmp'
-	    os.mkdir('tmp')	
+	    os.mkdir('tmp')
 
-	for code in SCHOOL_CODE:
+	for code in SCHOOL_CODE.values():
 	    if (not(os.path.exists(code))):
 		print 'Đang tạo thư mục %s' % code
 		os.mkdir(code)
@@ -69,7 +62,7 @@ def prepare(path):
             print 'Đang tạo thư mục INTERVIEW'
             os.mkdir('INTERVIEW')
 
-        for code in SCHOOL_CODE:
+        for code in SCHOOL_CODE.values():
             if (not(os.path.exists('INTERVIEW/' + code))):
                 print 'Đang tạo thư mục INTERVIEW/%s' % code
                 os.mkdir('INTERVIEW/' + code)
@@ -94,10 +87,10 @@ def run():
     # create thread POOL w.r.t the number of available cpus
     pool = multiprocessing.Pool(POOL_SIZE)
     print 'Máy tính của bạn có %s cpu, Chương trình sẽ tạo %s threads' % (NB_CPUS, POOL_SIZE)
-    
+
     # keep track of start time
     start_time = time.time()
-    
+
     # assign pdf build tasks to pool
     heading_csv = CANDIDATE_LIST[0]
     index_range = range(START_INDEX, END_INDEX)
@@ -111,23 +104,23 @@ def run():
 
     pool.close()
     pool.join()
-    
+
     try:
         os.rmdir(TARGET+'tmp')
     except OSError:
         pass
-		
+
     print 'Việc tạo pdf được tiến hành trong %0.2f giây' % (time.time()-start_time)
-		
+
 def zip():
 	# keep track of start time
     start_time = time.time()
-	
-    for school_code in SCHOOL_CODE:
+
+    for school_code in SCHOOL_CODE.values():
         makeZip.zip(ZIP_SOURCE_FOLDER + school_code, ZIP_DESTINATION_FOLDER + school_code)
-        makeZip.zip(ZIP_SOURCE_FOLDER + "INTERVIEW/" + school_code, ZIP_DESTINATION_FOLDER + "_INTERVIEW_" + school_code )    
+        makeZip.zip(ZIP_SOURCE_FOLDER + "INTERVIEW/" + school_code, ZIP_DESTINATION_FOLDER + "_INTERVIEW_" + school_code )
     print 'Việc nén file được tiến hành trong %0.2f giây' % (time.time()-start_time)
-    
+
 
 # Prepare tasks for sending pdfs to candidates and upload them to Google Drive
 # Arguments(0)
@@ -171,4 +164,3 @@ if __name__ == '__main__':
     zip()
     # Chỉ thực hiện stepTwo() một lần duy nhất sau khi nhận được tất cả hồ sơ
     # stepTwo()
-
