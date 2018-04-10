@@ -24,7 +24,7 @@ FORM_ID = {
 }
 
 URL_SUBMISSION_FORMAT = "https://123contactform.com/api/forms/{}/submissions.json"
-URL_SUBMISSION_COUNT_FORMAT = "https://www.123contactform.com/api/forms/{}/submissions/count.json"
+URL_SUBMISSION_COUNT_FORMAT = "https://www.123contactform.com/api/forms/{}/submissions/count.json?apiKey={}"
 
 PAGE_SIZE = 50
 
@@ -105,11 +105,11 @@ def run(candidates):
 
 
 def getSubmissionCount(form_id):
-	url = URL_SUBMISSION_COUNT_FORMAT.format(form_id)
+	url = URL_SUBMISSION_COUNT_FORMAT.format(form_id, API_KEY)
 	data = {
 		'apiKey': API_KEY
 	}
-	response = requests.post(url, data=data)
+	response = requests.get(url)
 	res_obj = json.loads(response.content)
 	logger.info(res_obj)
 	return int(res_obj['submissionsCount'])
