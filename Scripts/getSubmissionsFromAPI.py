@@ -31,7 +31,6 @@ PAGE_SIZE = 50
 
 # Specifies the .csv name and where to store pdfs
 TARGET = '../Docs/'
-UPLOAD_FOLDER = 'DH 2014'
 
 # Determine pool size
 NB_CPUS = multiprocessing.cpu_count()
