@@ -107,11 +107,11 @@ def run(candidates):
 def getSubmissionCount(form_id):
 	url = URL_SUBMISSION_COUNT_FORMAT.format(form_id)
 	data = {
-		'apiKey' : API_KEY
+		'apiKey': API_KEY
 	}
 	response = requests.post(url, data=data)
 	res_obj = json.loads(response.content)
-	logger.info(res_obj['submissionsCount'])
+	logger.info(res_obj)
 	return int(res_obj['submissionsCount'])
 
 def getSubmissionsFromAPI(form_id):
