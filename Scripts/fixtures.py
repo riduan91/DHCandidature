@@ -5,7 +5,7 @@ SCHOOL_CODE_LIST = [
 	'BKHN', 'TNHN', 'XD', 'GTVT1', 'CNHN',
 	'VINH', 'BKDN', 'KTDN','SPDN',
 	'NNDN', 'BKHCM', 'TNHCM', 'KTLHCM',
-	'GTVT2', 'DALAT', 'CTHO', 'SPKTHCM', 'KHAC'
+	'GTVT2', 'DALAT', 'CTHO', 'SPKTHCM', 'KHAC', 'UNK'
 ]
 
 SCHOOL_CODE = {
@@ -27,4 +27,5 @@ SCHOOL_CODE = {
     'Trường Đại học Cần Thơ' : 'CTHO',
     'Trường Đại học Sư phạm Kỹ thuật TP Hồ Chí Minh' : 'SPKTHCM',
     'Trường khác (ghi rõ trong thư xin học bổng)' : 'KHAC',
+    'Unknown': 'UNK',
 }

@@ -132,7 +132,6 @@ def getSubmissionsFromAPI(form_id):
 			for field in candidate['fields']:
 				candidate_string_list += [field['fieldvalue'].encode('utf-8')]
 			candidates += [candidate_string_list]
-	# logger.info(candidates[0])
 	return candidates
 
 if __name__ == '__main__':
