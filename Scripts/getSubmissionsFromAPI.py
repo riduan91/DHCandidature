@@ -28,9 +28,8 @@ URL_SUBMISSION_COUNT_FORMAT = "https://www.123contactform.com/api/forms/{}/submi
 
 PAGE_SIZE = 50
 
-
 # Specifies the .csv name and where to store pdfs
-TARGET = '../Docs/'
+TARGET = '../Docs_{}/'.format(CURRENT_SEMESTER)
 
 # Determine pool size
 NB_CPUS = multiprocessing.cpu_count()
