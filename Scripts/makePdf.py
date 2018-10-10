@@ -488,7 +488,7 @@ def buildPdf(target, index, candidate, heading_csv):
     '''
     # set path for temporary files
     TMP_PATH = target + 'tmp/'
-    INTERVIEW_PATH = target + '../Docs/INTERVIEW/'
+    INTERVIEW_PATH = target + 'INTERVIEW/'
     if get(candidate, 'Truong') == '-':
         candidate[INDEX_OF_KEY['Truong']] = "Unknown"
     filename = buildPdfName(candidate, index)
@@ -637,7 +637,7 @@ def buildPdf(target, index, candidate, heading_csv):
                 pass
 
     try:
-        os.remove('../Docs/tmp/' + filename2 + '_photo')
+        os.remove(TMP_PATH + filename2 + '_photo')
     except OSError as e:
         pass
     return filename
