@@ -3,7 +3,7 @@
 
 import os, sys, csv
 
-CURRENT_SEMESTER = 32
+CURRENT_SEMESTER = 34
 UPPERCASE = {
     'a': 'A', 'à': 'À', 'á': 'Á', 'ả': 'Ả', 'ã': 'Ã', 'ạ': 'Ạ',
     'ă': 'Ă', 'ằ': 'Ằ', 'ắ': 'Ắ', 'ẳ': 'Ẳ', 'ẵ': 'Ẵ', 'ặ': 'Ặ',
@@ -53,6 +53,7 @@ SCHOOL_CODE = {
     'Trường Đại học Giao thông vận tải cơ sở II (tại TP Hồ Chí Minh)' : 'GTVT2',
     'Trường Đại học Đà Lạt' : 'DALAT',
     'Trường Đại học Cần Thơ' : 'CTHO',
+    'Trường Đại học Sư phạm Kỹ thuật TP Hồ Chí Minh' : 'SPKTHCM',
     'Trường khác (ghi rõ trong thư xin học bổng)' : 'KHAC',
 }
 
@@ -73,6 +74,7 @@ SCHOOL_NB = {
     'Trường Đại học Giao thông vận tải cơ sở II (tại TP Hồ Chí Minh)' : '14',
     'Trường Đại học Đà Lạt' : '12',
     'Trường Đại học Cần Thơ' : '17',
+    'Trường Đại học Sư phạm Kỹ thuật TP Hồ Chí Minh' : '18',
     'Trường khác (ghi rõ trong thư xin học bổng)' : '21',
 }
 
@@ -195,10 +197,27 @@ def simplify(record):
     new_record[5] = SCHOOL_YEAR[record[5]]
     new_record[6] = record[7].replace(',', ';')
     new_record[7] = SCHOOL_CODE[record[8]]
-    new_record[8] = city(record[13], record[14])
+    new_record[8] = city(record[13], record[4])
     new_record[9] = record[16]
     new_record[10] = CURRENT_SEMESTER
     new_record[11] = "" 
+    return new_record
+
+def simplify2(record):
+    new_record = [""]*12
+    fullname = titlestyle(record[0]).split(" ")
+    new_record[0] = str(CURRENT_SEMESTER) + SCHOOL_NB[record[1]]
+    new_record[1] = " ".join(fullname[:-1])
+    new_record[2] = fullname[-1]
+    new_record[3] = record[2]
+    new_record[4] = record[3]
+    new_record[5] = SCHOOL_YEAR[record[5]]
+    new_record[6] = record[7].replace(',', ';')
+    new_record[7] = SCHOOL_CODE[record[1]]
+    new_record[8] = ""
+    new_record[9] = ""
+    new_record[10] = CURRENT_SEMESTER
+    new_record[11] = ""
     return new_record
 
 def getKeyToCompare(item):
@@ -208,7 +227,7 @@ if __name__ == '__main__':
     data = transformCSVToList(sys.argv[1])
     newdata = []
     for i in range(1, len(data)):
-        res = simplify(data[i])
+        res = simplify2(data[i])
         newdata.append(res)
     newdata = sorted(newdata, key=getKeyToCompare)
     myfile = open(sys.argv[1][:-4] + '_Simplified.csv', 'w' )

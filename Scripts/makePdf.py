@@ -658,8 +658,9 @@ def step1(Story, candidate, heading_csv, TMP_PATH):
 
     # add AnhCaNhan
     candidate_photo = ""
-    if get(candidate, 'AnhCaNhan') != "yes" and get(candidate, 'AnhCaNhan') != "":
+    if get(candidate, 'AnhCaNhan') != "yes" and get(candidate, 'AnhCaNhan') != "no" and get(candidate, 'AnhCaNhan') != "":
         try:
+            print(get(candidate, 'AnhCaNhan'))
             download(get(candidate, 'AnhCaNhan'), TMP_PATH + filename + '_photo')
             im = Image.open(TMP_PATH + filename + '_photo')
             imw = 75
@@ -929,19 +930,19 @@ def step4(candidate, filename):
     # Download the files if any.
     has_file = {'ThuXinHocBongScan': 0, 'BangDiemScan': 0, 'ChungNhanKhoKhanScan': 0, 'GiayToKhacScan': 0}
     # Thư xin học bổng scan
-    if get(candidate, 'KhungScanThu') != "":
+    if get(candidate, 'KhungScanThu') != "" and get(candidate, 'KhungScanThu') != "no":
         download(get(candidate, 'KhungScanThu'), filename + '_2.pdf')
         has_file['ThuXinHocBongScan'] = 1;
     # Bảng điểm
-    if get(candidate, 'BangDiemScan') != "":
+    if get(candidate, 'BangDiemScan') != "" and get(candidate, 'BangDiemScan') != "no":
         download(get(candidate, 'BangDiemScan'), filename + '_3.pdf')
         has_file['BangDiemScan'] = 1;
     # Chứng nhận khó khăn/Sổ hộ nghèo
-    if get(candidate, 'ChungNhanKhoKhanScan') != "":
+    if get(candidate, 'ChungNhanKhoKhanScan') != "" and get(candidate, 'ChungNhanKhoKhanScan') != "no":
         download(get(candidate, 'ChungNhanKhoKhanScan'), filename + '_4.pdf')
         has_file['ChungNhanKhoKhanScan'] = 1;
     # Giấy tờ khác
-    if get(candidate, 'GiayToKhacScan') != "":
+    if get(candidate, 'GiayToKhacScan') != "" and get(candidate, 'GiayToKhacScan') != "no":
         download(get(candidate, 'GiayToKhacScan'), filename + '_5.pdf')
         has_file['GiayToKhacScan'] = 1;
     return has_file
