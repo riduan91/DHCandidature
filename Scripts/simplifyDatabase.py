@@ -145,7 +145,7 @@ def transformCSVToList(filename):
     return data
 
 def simplify(record):
-    new_record = [""]*13
+    new_record = [""]*12
     fullname = titlestyle(record[1]).split(" ")
     new_record[0] = str(CURRENT_SEMESTER) + SCHOOL_NB[record[8]]
     new_record[1] = " ".join(fullname[:-1])
@@ -153,13 +153,12 @@ def simplify(record):
     new_record[3] = record[2]
     new_record[4] = record[3]
     new_record[5] = SCHOOL_YEAR[record[5]] if record[5] in SCHOOL_YEAR else ""
-    new_record[6] = record[4]
-    new_record[7] = record[7].replace(',', ';')
-    new_record[8] = SCHOOL_CODE[record[8]]
-    new_record[9] = city(record[10], record[11])
-    new_record[10] = record[15]
-    new_record[11] = record[16]
-    new_record[12] = CURRENT_SEMESTER
+    new_record[6] = record[7].replace(',', ';')
+    new_record[7] = SCHOOL_CODE[record[8]]
+    new_record[8] = city(record[10], record[11])
+    new_record[9] = record[16]
+    new_record[10] = CURRENT_SEMESTER
+    # last column is for result
     return new_record
 
 def simplify2(record):
