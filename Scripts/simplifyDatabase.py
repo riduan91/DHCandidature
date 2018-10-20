@@ -156,7 +156,7 @@ def simplify(record):
     new_record[6] = record[7].replace(',', ';')
     new_record[7] = SCHOOL_CODE[record[8]]
     new_record[8] = city(record[10], record[11])
-    new_record[9] = record[16]
+    new_record[9] = "{} - {}".format(record[16], record[15])
     new_record[10] = CURRENT_SEMESTER
     # last column is for result
     return new_record
