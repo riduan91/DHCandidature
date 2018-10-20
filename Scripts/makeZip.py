@@ -12,7 +12,7 @@ from fixtures import *
 #   - dst: resulting compressed file
 # return zip file's name
 
-SOURCE_FOLDER = "../Docs_{}/".format(CURRENT_SEMESTER)
+SOURCE_FOLDER = OUTPUT_FOLDER
 DESTINATION_FOLDER = "../Docsreduce/ZIPPER/"
 REDUCED_TARGET = '../Docsreduce/'
 

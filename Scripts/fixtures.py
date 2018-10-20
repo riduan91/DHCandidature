@@ -3,6 +3,8 @@
 
 CURRENT_SEMESTER = 35
 
+OUTPUT_FOLDER = "../Docs/"
+
 SCHOOL_CODE_LIST = [
 	'BKHN', 'TNHN', 'XD', 'GTVT1', 'CNHN',
 	'VINH', 'BKDN', 'KTDN','SPDN',

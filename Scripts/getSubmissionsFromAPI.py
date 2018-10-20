@@ -29,7 +29,7 @@ URL_SUBMISSION_COUNT_FORMAT = "https://www.123contactform.com/api/forms/{}/submi
 PAGE_SIZE = 50
 
 # Specifies the .csv name and where to store pdfs
-TARGET = '../Docs_{}/'.format(CURRENT_SEMESTER)
+TARGET = OUTPUT_FOLDER
 
 # Determine pool size
 NB_CPUS = multiprocessing.cpu_count()
@@ -132,7 +132,6 @@ def getSubmissionsFromAPI(form_id):
             candidate_string_list = []
             for field in candidate['fields']:
                 candidate_string_list += [field['fieldvalue'].encode('utf-8')]
-            print(candidate_string_list[7])
             candidates += [candidate_string_list]
     return candidates
 
