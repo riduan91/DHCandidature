@@ -660,7 +660,7 @@ def step1(Story, candidate, heading_csv, TMP_PATH):
     candidate_photo = ""
     if get(candidate, 'AnhCaNhan') != "yes" and get(candidate, 'AnhCaNhan') != "no" and get(candidate, 'AnhCaNhan') != "":
         try:
-            print(get(candidate, 'AnhCaNhan'))
+            # print(get(candidate, 'AnhCaNhan'))
             download(get(candidate, 'AnhCaNhan'), TMP_PATH + filename + '_photo')
             im = Image.open(TMP_PATH + filename + '_photo')
             imw = 75

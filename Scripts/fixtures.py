@@ -27,7 +27,7 @@ SCHOOL_CODE = {
     'Trường Đại học Giao thông vận tải cơ sở II (tại TP Hồ Chí Minh)' : 'GTVT2',
     'Trường Đại học Đà Lạt' : 'DALAT',
     'Trường Đại học Cần Thơ' : 'CTHO',
-    'Trường Đại học Ngoại Ngữ, ĐHQG Hà Nội' : 'NNHN',
+    'Trường Đại Học Ngoại Ngữ, ĐHQG Hà Nội' : 'NNHN',
     'Trường Đại học Sư phạm Kỹ thuật TP Hồ Chí Minh' : 'SPKTHCM',
     'Trường khác (ghi rõ trong thư xin học bổng)' : 'KHAC',
     'Unknown': 'UNK',
@@ -51,6 +51,6 @@ SCHOOL_NB = {
     'Trường Đại học Đà Lạt' : '12',
     'Trường Đại học Cần Thơ' : '17',
     'Trường Đại học Sư phạm Kỹ thuật TP Hồ Chí Minh' : '18',
-    'Trường Đại học Ngoại Ngữ, ĐHQG Hà Nội' : '19',
+    'Trường Đại Học Ngoại Ngữ, ĐHQG Hà Nội' : '19',
     'Trường khác (ghi rõ trong thư xin học bổng)' : '21',
 }

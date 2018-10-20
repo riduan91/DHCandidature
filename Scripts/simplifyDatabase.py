@@ -145,20 +145,21 @@ def transformCSVToList(filename):
     return data
 
 def simplify(record):
-    new_record = [""]*12
+    new_record = [""]*13
     fullname = titlestyle(record[1]).split(" ")
     new_record[0] = str(CURRENT_SEMESTER) + SCHOOL_NB[record[8]]
     new_record[1] = " ".join(fullname[:-1])
     new_record[2] = fullname[-1]
     new_record[3] = record[2]
     new_record[4] = record[3]
-    new_record[5] = SCHOOL_YEAR[record[5]]
-    new_record[6] = record[7].replace(',', ';')
-    new_record[7] = SCHOOL_CODE[record[8]]
-    new_record[8] = city(record[13], record[4])
-    new_record[9] = record[16]
-    new_record[10] = CURRENT_SEMESTER
-    new_record[11] = "" 
+    new_record[5] = SCHOOL_YEAR[record[5]] if record[5] in SCHOOL_YEAR else ""
+    new_record[6] = record[4]
+    new_record[7] = record[7].replace(',', ';')
+    new_record[8] = SCHOOL_CODE[record[8]]
+    new_record[9] = city(record[10], record[11])
+    new_record[10] = record[15]
+    new_record[11] = record[16]
+    new_record[12] = CURRENT_SEMESTER
     return new_record
 
 def simplify2(record):
@@ -185,7 +186,7 @@ if __name__ == '__main__':
     data = transformCSVToList(sys.argv[1])
     newdata = []
     for i in range(1, len(data)):
-        res = simplify2(data[i])
+        res = simplify(data[i])
         newdata.append(res)
     newdata = sorted(newdata, key=getKeyToCompare)
     myfile = open(sys.argv[1][:-4] + '_Simplified.csv', 'w' )
